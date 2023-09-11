@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-output "source_bucket_id" {
-  description = "ID of the source GCS bucket"
-  value       = module.gcs-bucket-source.id
-}
-
-output "sink_bucket_id" {
-  description = "ID of the sink GCS bucket"
-  value       = module.gcs-bucket-sink.id
-}
-
 output "vpc_self_link" {
   description = "Self link of VPC"
   value       = module.vpc.self_link
@@ -32,4 +22,15 @@ output "vpc_self_link" {
 output "cluster_self_link" {
   description = "Self link of GKE autopilot cluster"
   value       = module.cluster.self_link
+}
+
+output "cluster_endpoint" {
+  description = "Endpoint to the cluster"
+  value       = module.cluster.endpoint
+}
+
+
+output "cluster_ca_certificate" {
+  description = "Public certificate for the cluster"
+  value       = module.cluster.ca_certificate
 }

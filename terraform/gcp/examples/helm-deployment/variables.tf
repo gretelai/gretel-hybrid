@@ -19,26 +19,14 @@ variable "project_id" {
   description = "ID of GCP project in which cluster resources will be deployed"
 }
 
-
 variable "gcloud_platform" {
   type        = string
   description = "The platform on which gcloud is being run, i.e. 'linux' or 'darwin'"
 }
 
-
 variable "region" {
   type        = string
   description = "GCP region to use for cluster and associated networking resources"
-}
-
-variable "remote_state_bucket_location" {
-  type        = string
-  description = "Location of GCS bucket used for terraform remote state"
-}
-
-variable "remote_state_bucket_name" {
-  type        = string
-  description = "Unique name of state bucket"
 }
 
 variable "cluster_name" {
@@ -47,7 +35,22 @@ variable "cluster_name" {
   default     = "gretel-cluster"
 }
 
+variable "sink_bucket_name" {
+  type        = string
+  description = "Unique name for sink GCS bucket"
+}
+
+variable "source_bucket_name" {
+  type        = string
+  description = "Unique name for source GCS bucket"
+}
+
 variable "terraform_service_account" {
   type        = string
   description = "Service account to assume during terraform plan/applies"
+}
+
+variable "gretel_api_key" {
+  type        = string
+  description = "API Key used to authenticate with Gretel's APIs"
 }

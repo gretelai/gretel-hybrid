@@ -39,22 +39,25 @@ variable "region" {
   description = "GCP region to use for cluster and associated networking resources"
 }
 
+variable "remote_state_bucket_name" {
+  type        = string
+  description = "Unique name of state bucket"
+}
+
 variable "remote_state_bucket_location" {
   type        = string
   description = "Location of GCS bucket used for terraform remote state"
 }
 
-variable "sink_bucket_name" {
-  type        = string
-  description = "Unique name for sink GCS bucket"
-}
 
-variable "source_bucket_name" {
-  type        = string
-  description = "Unique name for source GCS bucket"
-}
 
 variable "terraform_service_account" {
   type        = string
   description = "Service account to assume during terraform plan/applies"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Name to use for GKE cluster"
+  default     = "gretel-cluster"
 }

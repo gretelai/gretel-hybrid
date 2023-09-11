@@ -47,13 +47,13 @@ module "gcs-bucket-terraform-state" {
   name       = var.remote_state_bucket_name
   location   = var.remote_state_bucket_location
   versioning = true
+  force_destroy = true
 }
 
-module "gretel-infrastructure" {
-  source             = "../../gretel-gcp-infrastructure-module"
-  project_id         = var.project_id
-  region             = var.region
-  source_bucket_name = var.source_bucket_name
-  sink_bucket_name   = var.sink_bucket_name
+module "gretel-cluster" {
+  source       = "../../gretel-gcp-cluster"
+  project_id   = var.project_id
+  region       = var.region
+  cluster_name = var.cluster_name
 }
 

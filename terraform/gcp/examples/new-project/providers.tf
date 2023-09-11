@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-project_id                   = "my-project"
-billing_account              = "123456-123456-123456"
-gcloud_platform              = "darwin"
-parent                       = "folders/123456789123"
-region                       = "us-west3"
-remote_state_bucket_location = "US"
-source_bucket_name           = "gretelai-source-bucket-123456"
-sink_bucket_name             = "gretelai-sink-bucket-123456"
-terraform_service_account    = "iac-creator@my-project.iam.gserviceaccount.com"
+provider "google" {
+  alias = "impersonation"
+  scopes = [
+    "https://www.googleapis.com/auth/cloud-platform"
+  ]
+}
+
+data "google_service_account_access_token" "default" {
+  provider               = google.impersonation
+  target_service_account = var.terraform_service_account
+  scopes                 = ["cloud-platform"]
+}
+
+provider "google" {
+  access_token    = data.google_service_account_access_token.default.access_token
+  request_timeout = "60s"
+}

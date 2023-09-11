@@ -26,12 +26,6 @@ variable "cluster_name" {
   default     = "gretel-cluster"
 }
 
-variable "enable_private_endpoint" {
-  type        = bool
-  description = "Whether or not to use a private endpoint for the GKE cluster control plane"
-  default     = true
-}
-
 variable "firewall_policy_name" {
   type        = string
   description = "Name of firewall policy"
@@ -41,13 +35,7 @@ variable "firewall_policy_name" {
 variable "master_authorized_ranges" {
   type        = map(string)
   description = "IP ranges with access to GKE control plane"
-  default     = {}
-}
-
-variable "master_global_access" {
-  type        = bool
-  description = "Whether or not to allow global access to the control plane"
-  default     = false
+  default     = {"all-internet": "0.0.0.0/0"}
 }
 
 variable "master_ipv4_cidr_block" {
@@ -78,32 +66,10 @@ variable "release_channel" {
   default     = "REGULAR"
 }
 
-variable "service_account_bastion_name" {
-  type        = string
-  description = "Name of bastion service account"
-  default     = "gretel-bastion-sa"
-}
-
 variable "service_account_node_name" {
   type        = string
   description = "Name of node service account"
   default     = "gretel-node-sa"
-}
-
-variable "service_account_workload_name" {
-  type        = string
-  description = "Name of workload service account"
-  default     = "gretel-workload-sa"
-}
-
-variable "sink_bucket_name" {
-  type        = string
-  description = "Unique name for sink GCS bucket"
-}
-
-variable "source_bucket_name" {
-  type        = string
-  description = "Unique name for source GCS bucket"
 }
 
 variable "subnet_cidr_pods" {

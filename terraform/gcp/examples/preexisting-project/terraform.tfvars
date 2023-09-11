@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-project_id                   = "my-existing-project"
+project_id                   = "my-gcp-project"
 gcloud_platform              = "darwin"
-parent                       = "organizations/123456789123"
 region                       = "us-west3"
 remote_state_bucket_location = "US"
-source_bucket_name           = "gretelai-source-bucket-123456"
-sink_bucket_name             = "gretelai-sink-bucket-123456"
-terraform_service_account    = "terraform-execution@my-existing-project.iam.gserviceaccount.com"
-remote_state_bucket_name     = "gretelai-existing-proj-state"
+terraform_service_account    = "terraform-execution@my-gcp-project.iam.gserviceaccount.com"
+remote_state_bucket_name     = "terraform-remote-state-demo-sandbox"
+cluster_name                 = "gretel-hybrid-cluster"

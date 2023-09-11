@@ -50,18 +50,18 @@ module "gcloud-enable-serial-port-logging" {
 }
 
 module "gcs-bucket-terraform-state" {
-  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/gcs?ref=v24.0.0"
-  project_id = module.project.id
-  name       = "gretelai-terraform-remote-state"
-  location   = var.remote_state_bucket_location
-  versioning = true
+  source        = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/gcs?ref=v24.0.0"
+  project_id    = module.project.id
+  name          = var.remote_state_bucket_name
+  location      = var.remote_state_bucket_location
+  versioning    = true
+  force_destroy = true
 }
 
 module "gretel-infrastructure" {
-  source             = "../../gcp"
-  project_id         = module.project.id
-  region             = var.region
-  source_bucket_name = var.source_bucket_name
-  sink_bucket_name   = var.sink_bucket_name
+  source       = "../../gcp"
+  project_id   = module.project.id
+  region       = var.region
+  cluster_name = var.cluster_name
 }
 
