@@ -70,7 +70,7 @@ This repo contains Terraform code for the GCP components required to run the cus
 
    You can get your Gretel API key following these [instructions](https://docs.gretel.ai/guides/environment-setup)
 
-1. Run the terraform as above, migrating the state as necessary to the same state bucket created in the first part, i.e.
+1. Run the terraform as above, migrating the state as necessary to the same state bucket created in the first part (or uncommenting before deploying), i.e.
 
    ```bash
    terraform init
@@ -96,22 +96,21 @@ This repo contains Terraform code for the GCP components required to run the cus
 
    and type `yes` in response to the prompt.
 
+1. Verify the deployment is correct by checking the cluster. The script will setup your kubeconfig as well as put you in the `gretel-hybrid` namespace
+
+   ```bash
+   ./get_cluster_creds.sh
+   kubectl get pods
+   ```
+
 1. Test the deployment.
 
-   CPU-based example:
+   Upload some test data, running `./copy_sample_data.sh`
 
-   ```bash
-   gretel models create --config synthetics/amplify \
-      --in-data gs://$SOURCE_BUCKET/sample-synthetic-healthcare.csv \
-      --runner manual \
-      --project $GRETEL_PROJECT
-   ```
+   Run `./gretel-configure.sh`, which will use the same API key from the setup.
 
-   GPU-based example:
+   Run a CPU-based example: `./cpu_job_run.sh`
 
-   ```bash
-   gretel models create --config synthetics/tabular-actgan \
-         --in-data gs://$SOURCE_BUCKET/sample-synthetic-healthcare.csv \
-         --runner manual \
-         --project $GRETEL_PROJECT
-   ```
+   Run a GPU-based example: `./gpu_job_run.sh`
+
+   You can verify the jobs completed successfully in the Gretel console as well as following the CLI output.

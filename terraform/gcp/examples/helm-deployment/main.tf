@@ -1,7 +1,7 @@
 # terraform {
 #   backend "gcs" {
 #     bucket = "gretelai-terraform-remote-state" # Can't use variable in backend spec
-#     prefix = "state"
+#     prefix = "helm-state"
 #   }
 # }
 

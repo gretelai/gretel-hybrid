@@ -84,7 +84,7 @@ resource "helm_release" "gretel_hybrid_agent" {
       artifactEndpoint          = "gs://${var.sink_bucket_name}/",
       apiKey                    = var.gretel_api_key,
       apiEndpoint               = var.gretel_api_endpoint,
-      gpuNodeSelector           = "{\"cloud.google.com/gke-accelerator\":\"nvidia-tesla-t4\"}",
+      gpuNodeSelector           = { "cloud.google.com/gke-accelerator" = "nvidia-tesla-t4" }
       workerMemoryInGb          = var.gretel_worker_pod_memory_gb
       preventAutoscalerEviction = false
     }
