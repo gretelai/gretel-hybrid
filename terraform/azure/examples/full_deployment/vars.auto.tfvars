@@ -1,0 +1,7 @@
+resource_group_name                  = "gretel-hybrid-env"
+region                               = "South Central US"
+deployment_name                      = "gretel-hybrid-env"
+kubernetes_version                   = "1.27"
+gretel_storage_account_name          = "hybriddemo"
+gretel_source_storage_container_name = "hybrid-demo-gretel-source"
+gretel_sink_storage_container_name   = "hybrid-demo-gretel-sink"
