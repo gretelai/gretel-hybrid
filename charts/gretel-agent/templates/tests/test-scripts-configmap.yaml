@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "gretel-agent.fullname" . }}-test-scripts"
+data:
+{{ (.Files.Glob "scripts/run_amplify_test.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "scripts/upload_data_to_bucket.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "scripts/run_actgan_test.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "scripts/smart_upload_file.py").AsConfig | indent 2 }}
