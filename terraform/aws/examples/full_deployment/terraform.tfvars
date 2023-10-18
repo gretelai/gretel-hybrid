@@ -10,5 +10,5 @@ cluster_admin_roles = {
 }
 cluster_admin_users = {
   # Format: "<name_for_kubernetes_rbac>" = "<iam_user_arn>"
-  # Example: "poweruser" = "arn:aws:iam::012345678912:user/cloud_team_admin_role"
+  # Example: "poweruser" = "arn:aws:iam::012345678912:user/cloud_team_admin_user"
 }
