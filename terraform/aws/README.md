@@ -1,34 +1,36 @@
-# Azure Gretel Hybrid Setup
+# AWS Gretel Hybrid Setup
 
 ## Overview
 
-This module will create an AKS Cluster (and its dependent resources), configure it, and deploy Gretel's hybrid agent (gretel-agent) so that hybrid jobs may be run within the cluster. The module supports autoscaling from zero nodes, so the minimum capacity for node groups can be set to zero and cluster autoscaler will provision nodes when it sees pending jobs. This can save on compute costs for expensive GPU nodes as they will only be provisioned when needed, and they will be deleted when idle.
+This module will create an EKS Cluster (and its dependent resources), configure it, and deploy Gretel's Hybrid Controller (gretel-agent) so that hybrid jobs may be run within the cluster. The module supports autoscaling from zero nodes, so the minimum capacity for node groups can be set to zero and cluster autoscaler will provision nodes when it sees pending jobs. This can save on compute costs for expensive GPU nodes as they will only be provisioned when needed, and they will be deleted when idle.
 
 Note: The terms "Gretel Hybrid", "Gretel Agent", and "gretel-agent" are essentially synonymous and may be used interchangeably.
 
-There are 6 primary submodules within this module that may be utilized or left out from a deployment as needed.
+There are 7 primary submodules within this module that may be utilized or left out from a deployment as needed.
 
-- `prereqs` deploys any prerequisite resources. In this case, it is only the Azure Resource Group that all resources will be placed in. You do not need this module if you wish to use an existing Azure Resource Group for your deployment.
-- `network` deploys an Azure Virtual Network along with a Node Subnet and a Pod Subnet. A network security group is also deployed at the subnet level and attached to both the node and pod subnets. You do not need this module if you wish to use an existing virtual network for your AKS cluster or you already have an AKS cluster.
-- `cluster` deploys an AKS cluster and a default node group for any generic services to run (eg. kube-system resources). You do not need this module if you wish to use an existing AKS cluster.
-- `cluster_addons` deploys any necessary prerequisite resources to the Kubernetes Cluster that Gretel Hybrid requires. In this case it is just the [nvidia-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) which is the driver required for GPU nodes. You do not need this module if you already have the nvidia-device-plugin deployed within an existing AKS cluster that you plan to deploy Gretel Hybrid into.
-- `node_groups` deploys 2 AKS Node Pools into your AKS cluster. One node pool for CPU Gretel Workers and the other for GPU Gretel Workers. This module is required unless you have provisioned node groups for Gretel Hybrid to use outside of Terraform.
-- `gretel_hybrid` deploys the Gretel Agent Helm Chart into your AKS cluster. It also creates the necessary blob storage for the Gretel Hybrid service to function.
+- `network` - Deploys the preliminary VPC for deploying a full end to end example.
+- `cluster` - Deploys the EKS cluster and a default node group to run kube-system resources.
+- `cluster_addon_nvidia_driver` - Deploys the [Nvidia Device Driver](https://github.com/NVIDIA/k8s-device-plugin) helm chart for GPU nodes.
+- `cluster_addon_cluster_autoscaler` - Deploys cluster-autoscaler helm chart for scaling node groups based on workloads.
+- `node_groups` - Deploys 2 EKS Node Groups. One for Gretel CPU workloads and one for Gretel GPU workloads.
+- `cluster_auth` - Manages the aws-auth ConfigMap for the cluster.
+- `gretel_hybrid` - Deploys the two necessary Gretel Hybrid S3 Buckets as well as the Gretel Hybrid helm chart.
 
-![Gretel Azure Terraform Diagram](.markdown/GretelHybridTerraform-Azure.jpg)
+![Gretel AWS Terraform Diagram](.markdown/GretelHybridTerraform-AWS.jpg)
 
 Note: This README assumes the operator will be deploying this module from a local workstation using the Terraform CLI. If this module is going to be deployed via GitOps/CICD then it is assumed the operator can adapt these instructions for their automation based use case.
 
 ## Table of Contents
 
-- [Azure Gretel Hybrid Setup](#azure-gretel-hybrid-setup)
+- [AWS Gretel Hybrid Setup](#aws-gretel-hybrid-setup)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Deployment](#deployment)
-    - [Authenticate with Azure](#authenticate-with-azure)
+    - [Authenticate with AWS](#authenticate-with-aws)
     - [Setup Gretel API Key](#setup-gretel-api-key)
     - [Setup Terraform State Store](#setup-terraform-state-store)
+    - [Configure AWS Provider](#configure-aws-provider)
     - [Configure Variables](#configure-variables)
     - [Deploy](#deploy)
   - [Test Your Hybrid Deployment](#test-your-hybrid-deployment)
@@ -39,26 +41,23 @@ Note: This README assumes the operator will be deploying this module from a loca
 
 ## Prerequisites
 
-[Install the az cli.](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+[Install the aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
-[Install the Terraform CLI.](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli).
+[Install the Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
 
 It is also recommended to [install the kubectl CLI](https://kubernetes.io/docs/tasks/tools/) if you want to take a closer look at the Kubernetes resources that are provisioned.
 
+
 ## Deployment
 
-### Authenticate with Azure
+### Authenticate with AWS
 
-The first step necessary is to authenticate with Azure within your shell session. See: https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli
-
-```sh
-az login
-```
+The first step necessary is to authenticate with AWS within your shell session. See: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
 Confirm you are authenticated with your desired account by running the below command.
 
 ```sh
-az account show
+aws sts get-caller-identity
 ```
 
 ### Setup Gretel API Key
@@ -80,29 +79,28 @@ Don't forget to delete this entry from your shell history afterward! The method 
 
 See: https://developer.hashicorp.com/terraform/language/settings/backends/configuration
 
-Run the `bootstrap_state_backend.sh` script in the `tf/scripts` directory to create an Azure storage container that can be used as the Terraform backend.
+Run the `bootstrap_state_backend.sh` script in the `tf/scripts` directory to create an AWS S3 Bucket that can be used as the Terraform backend.
 
 ```sh
 # Example
-cd tf/scripts
-./bootstrap_state_backend.sh --location "southcentralus" --resource-group "tfstate" --storage-account "tfstategretel" --container "tfstate"
+cd scripts
+./bootstrap_state_backend.sh --aws-region us-west-2 --bucket-name my-unique-tf-state-bucket-name
 ```
 
 The script will output an example backend configuration that you can use to declare your terraform backend. 
 
 ```
-$ ./bootstrap_state_backend.sh --location "southcentralus" --resource-group "tfstate" --storage-account "tfstategretel" --container "tfstate"
+$ ./bootstrap_state_backend.sh --aws-region us-west-2 --bucket-name my-unique-tf-state-bucket-name
 
-Example Terraform Backend Configuration:
-========================================
+S3 bucket 'my-unique-tf-state-bucket-name' created successfully.
+Bucket 'my-unique-tf-state-bucket-name' is now ready to be used as a Terraform state backend.
 
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "tfstate"
-    storage_account_name  = "tfstategretel"
-    container_name        = "tfstate"
-    key                   = "gretel-hybrid-env.tfstate"
-  }
+Here is an example Terraform backend configuration:
+
+backend "s3" {
+  bucket = "my-unique-tf-state-bucket-name"
+  key    = "state/aws-gretel-hybrid/terraform.tfstate"
+  region = "us-west-2"
 }
 ```
 
@@ -118,6 +116,31 @@ terraform {}
 terraform {
   backend "local" {
     path = "terraform.tfstate"
+  }
+}
+```
+
+### Configure AWS Provider
+
+See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+Next to the backend configuration in `main.tf` is the AWS provider configuration. Set it up as needed based on your environment. Two examples are below.
+
+This first example uses the region configured in the local vars and uses the creds that are active for the current shell session.
+
+```
+provider "aws" {
+  region = var.region
+}
+```
+
+This second example is the same as above, but in this scenario the AWS config for the local session is setup for Account A and we want to deploy to Account B (with a different account ID). We can pass a role_arn for the role we would like to assume to deploy our resources.
+
+```
+provider "aws" {
+  region = var.region
+  assume_role {
+    role_arn = "arn:aws:iam::012345678912:role/TerraformExecution"
   }
 }
 ```
@@ -141,7 +164,7 @@ terraform plan
 terraform apply
 ```
 
-After the resources successfully deploy, you can [schedule a hybrid job](https://docs.gretel.ai/guides/environment-setup/running-gretel-hybrid/azure-setup#test-your-deployment.2-1) within your Gretel Project and it should run within your cluster! We will cover this later in this README as well.
+After the resources successfully deploy, you can [schedule a hybrid job](https://docs.gretel.ai/guides/environment-setup/running-gretel-hybrid/aws-setup#test-your-deployment.1) within your Gretel Project and it should run within your cluster! We will cover this later in this README as well.
 
 ## Test Your Hybrid Deployment
 
@@ -151,7 +174,10 @@ You can authenticate with your cluster with the following command. The authentic
 
 ```sh
 # This command needs run once to create your kubeconfig for this cluster
-az aks get-credentials --resource-group "resource_group_name_here" --name "cluster_name_here"
+aws eks update-kubeconfig --region <cluster_region_here> --name <cluster_name_here>
+
+# The below command will work afterwards if your aws creds are valid
+kubectl config use-context <cluster-arn>
 ```
 
 ### Examining Kubernetes Resources
@@ -213,16 +239,15 @@ INFO: Starting Gretel agent using driver k8s.
 
 ### Run a Job
 
-Now let's schedule a hybrid job [following our documentation here](https://docs.gretel.ai/guides/environment-setup/running-gretel-hybrid/azure-setup#test-your-deployment.2-1). The necessary commands are included below.
+Now let's schedule a hybrid job [following our documentation here](https://docs.gretel.ai/guides/environment-setup/running-gretel-hybrid/aws-setup#test-your-deployment.1). The necessary commands are included below.
 
 ```sh
-# Set the below variables to point to your source Azure Storage Account and Source Container that you defined in the vars.auto.tfvars file
-SOURCE_STORAGE_ACCOUNT="hybriddemo"
-SOURCE_CONTAINER="hybrid-demo-gretel-source"
+# Set the below variables to point to your source AWS S3 Bucket that you defined in the terraform.tfvars file
+SOURCE_BUCKET="your-gretel-source-bucket-name-here"
 
-# Run this block of commands to upload the test CSV data to your Azure Source Container.
+# Run this block of commands to upload the test CSV data to your AWS S3 Source Bucket.
 wget https://raw.githubusercontent.com/gretelai/gretel-blueprints/main/sample_data/sample-synthetic-healthcare.csv
-az storage blob upload --container-name $SOURCE_BUCKET --type block --name sample-synthetic-healthcare.csv --file sample-synthetic-healthcare.csv --account-name $SOURCE_STORAGE_ACCOUNT
+aws s3 cp sample-synthetic-healthcare.csv s3://$SOURCE_BUCKET/
 rm -f sample-synthetic-healthcare.csv
 
 # Create a Gretel Project
@@ -232,14 +257,14 @@ gretel projects create --name "$GRETEL_PROJECT" --display-name "Gretel Hybrid Te
 # Option 1: CPU Test
 # Create a model training job with CPU based Amplify model.
 gretel models create --config synthetics/amplify \
-  --in-data azure://$SOURCE_CONTAINER/sample-synthetic-healthcare.csv \
+  --in-data s3://$SOURCE_BUCKET/sample-synthetic-healthcare.csv \
   --runner manual \
   --project $GRETEL_PROJECT
 
 # Option 2: GPU Test
 # Create a model training job with GPU based ACTGAN model.
 gretel models create --config synthetics/tabular-actgan \
-    --in-data azure://$SOURCE_CONTAINER/sample-synthetic-healthcare.csv \
+    --in-data s3://$SOURCE_BUCKET/sample-synthetic-healthcare.csv \
     --runner manual \
     --project $GRETEL_PROJECT
 ```
@@ -264,10 +289,10 @@ Events:
   Type     Reason            Age   From                Message
   ----     ------            ----  ----                -------
   Warning  FailedScheduling  114s  default-scheduler   0/1 nodes are available: 1 node(s) didn't match Pod's node affinity/selector. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
-  Normal   TriggeredScaleUp  82s   cluster-autoscaler  pod triggered scale-up: [{aks-gretelgpu-27672801-vmss 0->1 (max: 3)}]
+  Normal   TriggeredScaleUp  82s   cluster-autoscaler  pod triggered scale-up: [{gretel-workers-gpu-20231017181210872600000026 0->1 (max: 3)}]
 ```
 
-We can see above the "TriggeredScaleUp" event. There wasn't an appropriate node created in the GPU Worker Node Group, so the cluster-autoscaler created one. We have to wait 2-3 minutes for this node to be created and join the cluster. If you deploy your node groups with a minimum auto scaling size of at least 1 node you will not need to wait. The trade off is that running a cloud instance 24/7 will incur costs with Azure.
+We can see above the "TriggeredScaleUp" event. There wasn't an appropriate node created in the GPU Worker Node Group, so the cluster-autoscaler created one. We have to wait 2-3 minutes for this node to be created and join the cluster. If you deploy your node groups with a minimum auto scaling size of at least 1 node you will not need to wait. The trade off is that running a cloud instance 24/7 will incur costs with your cloud provider.
 
 Wait 5-10 minutes and then run the get pods command again to check on the status of the pod.
 
@@ -317,7 +342,7 @@ gretel-agent-65b7fb748c-xgx88    1/1     Running   0          3h50m
 
 ## Clean Up
 
-To clean up all we can run the below `terraform` command. Always pay attention and make sure you're deleting the resources you expect within the correct Azure subscription.
+To clean up all we can run the below `terraform` command. Always pay attention and make sure you're deleting the resources you expect within the correct AWS account.
 
 ```sh
 terraform destroy
