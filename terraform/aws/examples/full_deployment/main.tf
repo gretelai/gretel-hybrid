@@ -75,7 +75,7 @@ module "network" {
 module "cluster" {
   source       = "../../modules/cluster"
   cluster_name = "${var.deployment_name}-cluster"
-  eks_version  = "1.27"
+  eks_version  = var.kubernetes_version
   aws_tags     = local.aws_tags
 
   # ----- Standard K8s Workers -----
