@@ -42,11 +42,11 @@ module "gcloud-enable-serial-port-logging" {
 }
 
 module "gcs-bucket-terraform-state" {
-  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/gcs?ref=v24.0.0"
-  project_id = var.project_id
-  name       = var.remote_state_bucket_name
-  location   = var.remote_state_bucket_location
-  versioning = true
+  source        = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/gcs?ref=v24.0.0"
+  project_id    = var.project_id
+  name          = var.remote_state_bucket_name
+  location      = var.remote_state_bucket_location
+  versioning    = true
   force_destroy = true
 }
 

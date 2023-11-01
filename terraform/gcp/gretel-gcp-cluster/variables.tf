@@ -35,7 +35,7 @@ variable "firewall_policy_name" {
 variable "master_authorized_ranges" {
   type        = map(string)
   description = "IP ranges with access to GKE control plane"
-  default     = {"all-internet": "0.0.0.0/0"}
+  default     = { "all-internet" : "0.0.0.0/0" }
 }
 
 variable "master_ipv4_cidr_block" {
