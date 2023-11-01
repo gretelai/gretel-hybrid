@@ -1,0 +1,150 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "config": {
+            "basics": {
+                "location": {
+                    "resourceTypes": [
+                        "microsoft.insights/components",
+                        "microsoft.insights/components/CurrentBillingFeatures",
+                        "Microsoft.Sql/servers",
+                        "Microsoft.Web/sites",
+                        "Microsoft.Web/serverfarms"
+                    ]
+                }
+            }
+        },
+        "basics": [],
+        "steps": [
+            {
+                "name": "storageConfig",
+                "label": "Storage settings",
+                "elements": [
+                    {
+                        "name": "storageName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Storage Account Name",
+                        "defaultValue": "gretelhybrid",
+                        "visible": true,
+                        "tooltip": "Name of the storage account where blob storage will be created",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "clusterConfig",
+                "label": "Kubernetes Cluster settings",
+                "elements": [
+                    {
+                        "name": "hybridVnet",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Hybrid VNet Name",
+                        "defaultValue": "gretel-hybrid-vnet",
+                        "visible": true,
+                        "tooltip": "Vnet name for the hybrid VPC",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "clusterName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Hybrid Cluster Name",
+                        "defaultValue": "gretel-hybrid-cluster",
+                        "visible": true,
+                        "tooltip": "Name of the AKS cluster to run Gretel hybrid",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "agentPoolIdentityName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Agent Pool Identity Name",
+                        "defaultValue": "gretel-hybrid-cluster-agentpool",
+                        "tooltip": "Name of the agent pool running in the hybrid AKS cluster",
+                        "visible": true,
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "nsgName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Network Security Group Name",
+                        "defaultValue": "gretel-hybrid-vnet-nodes-pods-nsg",
+                        "tooltip": "Name of the security group for the nodes in the Hybrid AKS cluster",
+                        "visible": true,
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "publicIpAddressName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Public IP Address Name (for egress)",
+                        "defaultValue": "gretel-cluster-public-ip",
+                        "visible": true,
+                        "tooltip": "Name of the Public IP address resource",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "logsWorkspaceName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Logs Workspace Name",
+                        "defaultValue": "gretel-hybrid-env-cluster-logs-workspace",
+                        "visible": true,
+                        "tooltip": "Name of the workspace to send cluster logs",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    },
+                    {
+                        "name": "containerInsightsLogsWorkspaceName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Container Insights Logs Workspace Name",
+                        "defaultValue": "ContainerInsights(gretel-hybrid-cluster-logs-workspace)",
+                        "visible": true,
+                        "tooltip": "Name of the workspace to send container insights logs",
+                        "constraints": {
+                            "regex": "^[a-z0-9A-Z]{1,32}$",
+                            "required": true,
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-32 characters long."
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "location": "[location()]",
+            "storageAccounts_hybrid_name": "[steps('storageConfig').storageName]",
+            "virtualNetworks_gretel_hybrid_env_vnet_vnet_name": "[steps('clusterConfig').hybridVnet]",
+            "agentPoolIdentityName": "[steps('clusterConfig').agentPoolIdentityName]",
+            "managedClusters_gretel_hybrid_env_cluster_name": "[steps('clusterConfig').clusterName]",
+            "networkSecurityGroups_gretel_hybrid_env_vnet_nodes_pods_nsg_name": "[steps('clusterConfig').nsgName]",
+            "workspaces_gretel_hybrid_env_cluster_logs_workspace_name": "[steps('clusterConfig').logsWorkspaceName]",
+            "solutions_ContainerInsights_gretel_hybrid_env_cluster_logs_workspace__name": "[steps('clusterConfig').containerInsightsLogsWorkspaceName]",
+            "publicIpAddressName": "[steps('clusterConfig').publicIpAddressName]"
+        }
+    }
+}
