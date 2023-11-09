@@ -8,12 +8,23 @@ locals {
   node_labels = format("--node-labels=%s", join(",", local.labels_string_list))
   node_taints = format("--register-with-taints=%s", join(",", local.taints_string_list))
 
-  k8s_tags = {
+
+  # Setting up ASG tags for cluster-autoscaler
+  cluster_autoscaler_label_tags = {
+    for label in var.node_labels :
+    "k8s.io/cluster-autoscaler/node-template/label/${label.key}" => "${label.value}"
+  }
+  cluster_autoscaler_taint_tags = {
+    for taint in var.node_taints :
+    "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${taint.effect}"
+  }
+
+  cluster_autoscaler_asg_tags = merge(local.cluster_autoscaler_label_tags, local.cluster_autoscaler_taint_tags)
+
+  k8s_tags = merge({
     "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"
     "k8s.io/cluster-autoscaler/enabled"             = "true"
-    "k8s.io/cluster/${var.cluster_name}"            = "owned"
-    "kubernetes.io/cluster/${var.cluster_name}"     = "owned"
-  }
+  }, local.cluster_autoscaler_asg_tags)
 }
 
 data "aws_ami" "node_group_ami" {
