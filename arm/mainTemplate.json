@@ -309,7 +309,7 @@
                 "gretel-hybrid-cluster": "gretel-hybrid-env"
             },
             "plan": {
-                "name": "ContainerInsights(gretel-hybrid-env-cluster-logs-workspace)",
+                "name": "[parameters('solutions_ContainerInsights_gretel_hybrid_env_cluster_logs_workspace__name')]",
                 "promotionCode": "",
                 "product": "OMSGallery/ContainerInsights",
                 "publisher": "Microsoft"
@@ -489,7 +489,7 @@
                         "powerState": {
                             "code": "Running"
                         },
-                        "orchestratorVersion": "1.27.3",
+                        "orchestratorVersion": "1.27.7",
                         "enableNodePublicIP": false,
                         "enableCustomCATrust": false,
                         "tags": {
@@ -520,7 +520,7 @@
                         "powerState": {
                             "code": "Running"
                         },
-                        "orchestratorVersion": "1.27.3",
+                        "orchestratorVersion": "1.27.7",
                         "enableNodePublicIP": false,
                         "enableCustomCATrust": false,
                         "tags": {
@@ -557,7 +557,7 @@
                         "powerState": {
                             "code": "Running"
                         },
-                        "orchestratorVersion": "1.27.3",
+                        "orchestratorVersion": "1.27.7",
                         "enableNodePublicIP": false,
                         "enableCustomCATrust": false,
                         "tags": {
@@ -697,7 +697,7 @@
                 "powerState": {
                     "code": "Running"
                 },
-                "orchestratorVersion": "1.27.3",
+                "orchestratorVersion": "1.27.7",
                 "enableNodePublicIP": false,
                 "enableCustomCATrust": false,
                 "tags": {
@@ -737,7 +737,7 @@
                 "powerState": {
                     "code": "Running"
                 },
-                "orchestratorVersion": "1.27.3",
+                "orchestratorVersion": "1.27.7",
                 "enableNodePublicIP": false,
                 "enableCustomCATrust": false,
                 "tags": {
@@ -783,7 +783,7 @@
                 "powerState": {
                     "code": "Running"
                 },
-                "orchestratorVersion": "1.27.3",
+                "orchestratorVersion": "1.27.7",
                 "enableNodePublicIP": false,
                 "enableCustomCATrust": false,
                 "tags": {
