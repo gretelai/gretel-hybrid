@@ -174,15 +174,15 @@ module "gretel_hybrid" {
   gretel_worker_pod_memory_gb = "14" # 16GB workers, leaving a little bit of headroom
   gretel_worker_pod_cpu_count = "2"  # 4 vCPU workers
 
-  gretel_gpu_worker_node_selector = {
+  gretel_gpu_model_worker_node_selector = {
     for label in module.node_groups.gpu_node_group_labels : label.key => label.value
   }
-  gretel_gpu_worker_tolerations = module.node_groups.gpu_node_group_taints
+  gretel_gpu_model_worker_tolerations = module.node_groups.gpu_node_group_taints
 
-  gretel_cpu_worker_node_selector = {
+  gretel_cpu_model_worker_node_selector = {
     for label in module.node_groups.cpu_node_group_labels : label.key => label.value
   }
-  gretel_cpu_worker_tolerations = module.node_groups.cpu_node_group_taints
+  gretel_cpu_model_worker_tolerations = module.node_groups.cpu_node_group_taints
 
   gretel_worker_env_vars = {
     EXAMPLE_VAR = "EXAMPLE_VALUE"

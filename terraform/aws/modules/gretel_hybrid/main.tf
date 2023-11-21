@@ -1,7 +1,7 @@
 # Formatting tolerations to match helm chart's expected input
 locals {
   gpu_tolerations = [
-    for toleration in var.gretel_gpu_worker_tolerations : {
+    for toleration in var.gretel_gpu_model_worker_tolerations : {
       key      = toleration.key
       operator = "Equal"
       value    = toleration.value
@@ -9,7 +9,7 @@ locals {
     }
   ]
   cpu_tolerations = [
-    for toleration in var.gretel_cpu_worker_tolerations : {
+    for toleration in var.gretel_cpu_model_worker_tolerations : {
       key      = toleration.key
       operator = "Equal"
       value    = toleration.value
@@ -99,7 +99,7 @@ resource "helm_release" "gretel_hybrid_agent" {
       maxWorkers                = var.gretel_max_workers,
       gpuNodeSelector           = var.gretel_gpu_worker_node_selector,
       gpuTolerations            = local.gpu_tolerations,
-      cpuNodeSelector           = var.gretel_cpu_worker_node_selector,
+      cpuNodeSelector           = var.gretel_cpu_model_worker_node_selector,
       cpuTolerations            = local.cpu_tolerations,
       imageRegistryOverrideHost = var.gretel_image_registry_override_host
     }
