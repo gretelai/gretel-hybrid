@@ -35,6 +35,7 @@ Once installed, run `helm test gretel-agent` to test running an amplify model ag
 | `gretelConfig.artifactEndpoint`          | S3/GCS/Azure storage path, used to upload model related artifacts            | `""`                       |
 | `gretelConfig.apiEndpoint`               | API endpoint to receive Gretel Jobs                                          | `https://api.gretel.cloud` |
 | `gretelConfig.apiKey`                    | Key used to authenticate to the Gretel API                                   | `""`                       |
+| `gretelConfig.apiKeySecretRef`           | Existing k8s secret containing GRETEL_API_KEY. Use instead of apiKey.        | `""`                       |
 | `gretelConfig.project`                   | Project to receive jobs from                                                 | `""`                       |
 | `gretelConfig.workerEnv`                 | Environment variables to be passed to the worker pods                        | `nil`                      |
 | `gretelConfig.workerMemoryInGb`          | Memory size in GB for the worker pods                                        | `14`                       |
@@ -47,3 +48,5 @@ Once installed, run `helm test gretel-agent` to test running an amplify model ag
 | `gretelConfig.extraCaCert`               | PEM certificate file contents to be used by the agent/workers                | `""`                       |
 | `gretelConfig.imageRegistryOverrideHost` | URL to override the image registry used to fetch worker images               | `""`                       |
 | `gretelConfig.preventAutoscalerEviction` | Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler | `true`                     |
+
+> If you're using a secrets store CSI driver and would like to store your Gretel API key using an external service (like AWS Secrets Manager), [sync your external secret as a k8s secret](https://secrets-store-csi-driver.sigs.k8s.io/topics/sync-as-kubernetes-secret) and pass the name of the resulting k8s secret to `gretelConfig.apiKeySecretRef`. The opaque secret should contain the GRETEL_API_KEY key with your API key as the value. Leave `gretelConfig.apiKey` unset when using `gretelConfig.apiKeySecretRef`.

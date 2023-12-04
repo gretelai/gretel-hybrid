@@ -90,7 +90,8 @@ affinity: {}
 ##
 ## @param gretelConfig.artifactEndpoint S3/GCS/Azure storage path, used to upload model related artifacts
 ## @param gretelConfig.apiEndpoint API endpoint to receive Gretel Jobs
-## @param gretelConfig.apiKey Key used to authenticate to the Gretel API
+## @param gretelConfig.apiKey Key used to authenticate to the Gretel API. Only one of apiKey or apiKeySecretRef should be set.
+## @param gretelConfig.apiKeySecretRef Existing kubernetes secret where GRETEL_API_KEY is set. Allows passing the API key via CSI provider. Only one of apiKey or apiKeySecretRef should be set.
 ## @param gretelConfig.project Project to receive jobs from
 ## @param gretelConfig.workerEnv Environment variables to be passed to the worker pods
 ## @param gretelConfig.workerMemoryInGb Memory size in GB for the worker pods
@@ -103,11 +104,14 @@ affinity: {}
 ## @param gretelConfig.extraCaCert PEM certificate file contents to be used by the agent/workers
 ## @param gretelConfig.imageRegistryOverrideHost URL to override the image registry used to fetch worker images
 ## @param gretelConfig.preventAutoscalerEviction Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler
+## @param gretelConfig.podLabels Labels to apply to Pods deployed by this chart
+## @param gretelConfig.deploymentLabels Labels to apply to Deployments deployed by this chart
 ##
 gretelConfig:
   artifactEndpoint: ""
   apiEndpoint: "https://api.gretel.cloud"
   apiKey: ""
+  apiKeySecretRef: ""
   project: ""
   workerEnv: # Any required environment variables for object storage should either go here or be set using --set gretelConfig.workerEnv.VAR_NAME=VAR_VALUE
   workerMemoryInGb: 14
@@ -120,3 +124,5 @@ gretelConfig:
   extraCaCert: ""
   imageRegistryOverrideHost: ""
   preventAutoscalerEviction: true
+  podLabels: {}
+  deploymentLabels: {}

@@ -5,6 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "gretel-agent.labels" . | nindent 4 }}
+    {{- with .Values.gretelConfig.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: 1
   selector:
@@ -19,6 +22,9 @@ spec:
       {{- end }}
       labels:
         {{- include "gretel-agent.selectorLabels" . | nindent 8 }}
+        {{- with .Values.gretelConfig.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -52,6 +58,10 @@ spec:
             "--max-workers", "{{ .Values.gretelConfig.maxWorkers }}",
           ]
           envFrom:
+          {{- if .Values.gretelConfig.apiKeySecretRef }}
+          - secretRef:
+              name: {{ .Values.gretelConfig.apiKeySecretRef }}
+          {{- end }}
           - secretRef:
               name: {{ include "gretel-agent.secretName" . }}
           - configMapRef:
