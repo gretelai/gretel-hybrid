@@ -30,23 +30,25 @@ Once installed, run `helm test gretel-agent` to test running an amplify model ag
 
 ### Gretel Parameters
 
-| Name                                     | Description                                                                  | Value                      |
-| ---------------------------------------- | ---------------------------------------------------------------------------- | -------------------------- |
-| `gretelConfig.artifactEndpoint`          | S3/GCS/Azure storage path, used to upload model related artifacts            | `""`                       |
-| `gretelConfig.apiEndpoint`               | API endpoint to receive Gretel Jobs                                          | `https://api.gretel.cloud` |
-| `gretelConfig.apiKey`                    | Key used to authenticate to the Gretel API                                   | `""`                       |
-| `gretelConfig.apiKeySecretRef`           | Existing k8s secret containing GRETEL_API_KEY. Use instead of apiKey.        | `""`                       |
-| `gretelConfig.project`                   | Project to receive jobs from                                                 | `""`                       |
-| `gretelConfig.workerEnv`                 | Environment variables to be passed to the worker pods                        | `nil`                      |
-| `gretelConfig.workerMemoryInGb`          | Memory size in GB for the worker pods                                        | `14`                       |
-| `gretelConfig.maxWorkers`                | Number of workers to spawn concurrently from the agent                       | `0`                        |
-| `gretelConfig.gpuNodeSelector`           | Node selector for selecting GPUs based jobs                                  | `{}`                       |
-| `gretelConfig.cpuNodeSelector`           | Node selector for selecting CPU based jobs                                   | `{}`                       |
-| `gretelConfig.gpuTolerations`            | Tolerations for GPU based jobs                                               | `[]`                       |
-| `gretelConfig.cpuTolerations`            | Tolerations for CPU based jobs                                               | `[]`                       |
-| `gretelConfig.cpuCount`                  | Integer value specifying number of CPUs to use for workers                   | `""`                       |
-| `gretelConfig.extraCaCert`               | PEM certificate file contents to be used by the agent/workers                | `""`                       |
-| `gretelConfig.imageRegistryOverrideHost` | URL to override the image registry used to fetch worker images               | `""`                       |
-| `gretelConfig.preventAutoscalerEviction` | Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler | `true`                     |
+| Name                                     | Description                                                                                                                                               | Value                      |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `gretelConfig.artifactEndpoint`          | S3/GCS/Azure storage path, used to upload model related artifacts                                                                                         | `""`                       |
+| `gretelConfig.apiEndpoint`               | API endpoint to receive Gretel Jobs                                                                                                                       | `https://api.gretel.cloud` |
+| `gretelConfig.apiKey`                    | Key used to authenticate to the Gretel API. Only one of apiKey or apiKeySecretRef should be set.                                                          | `""`                       |
+| `gretelConfig.apiKeySecretRef`           | Existing kubernetes secret where GRETEL_API_KEY is set. Allows passing the API key via CSI provider. Only one of apiKey or apiKeySecretRef should be set. | `""`                       |
+| `gretelConfig.project`                   | Project to receive jobs from                                                                                                                              | `""`                       |
+| `gretelConfig.workerEnv`                 | Environment variables to be passed to the worker pods                                                                                                     | `nil`                      |
+| `gretelConfig.workerMemoryInGb`          | Memory size in GB for the worker pods                                                                                                                     | `14`                       |
+| `gretelConfig.maxWorkers`                | Number of workers to spawn concurrently from the agent                                                                                                    | `0`                        |
+| `gretelConfig.gpuNodeSelector`           | Node selector for selecting GPUs based jobs                                                                                                               | `{}`                       |
+| `gretelConfig.cpuNodeSelector`           | Node selector for selecting CPU based jobs                                                                                                                | `{}`                       |
+| `gretelConfig.gpuTolerations`            | Tolerations for GPU based jobs                                                                                                                            | `[]`                       |
+| `gretelConfig.cpuTolerations`            | Tolerations for CPU based jobs                                                                                                                            | `[]`                       |
+| `gretelConfig.cpuCount`                  | Integer value specifying number of CPUs to use for workers                                                                                                | `""`                       |
+| `gretelConfig.extraCaCert`               | PEM certificate file contents to be used by the agent/workers                                                                                             | `""`                       |
+| `gretelConfig.imageRegistryOverrideHost` | URL to override the image registry used to fetch worker images                                                                                            | `""`                       |
+| `gretelConfig.preventAutoscalerEviction` | Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler                                                                              | `true`                     |
+| `gretelConfig.podLabels`                 | Labels to apply to Pods deployed by this chart                                                                                                            | `{}`                       |
+| `gretelConfig.deploymentLabels`          | Labels to apply to Deployments deployed by this chart                                                                                                     | `{}`                       |
 
 > If you're using a secrets store CSI driver and would like to store your Gretel API key using an external service (like AWS Secrets Manager), [sync your external secret as a k8s secret](https://secrets-store-csi-driver.sigs.k8s.io/topics/sync-as-kubernetes-secret) and pass the name of the resulting k8s secret to `gretelConfig.apiKeySecretRef`. The opaque secret should contain the GRETEL_API_KEY key with your API key as the value. Leave `gretelConfig.apiKey` unset when using `gretelConfig.apiKeySecretRef`.
