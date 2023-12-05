@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}argo-controller
+  labels:
+    app.kubernetes.io/component: argo-controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: argo-controller
+      {{- include "gretel-gcc.selectorLabels" . | nindent 6 }}
+      workload: controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: argo-controller
+        {{- include "gretel-gcc.selectorLabels" . | nindent 8 }}
+        workload: controller
+    spec:
+      serviceAccountName: "{{ include "gretel-gcc.argoController.serviceAccount.name" . }}"
+      containers:
+        - name: controller
+          image: {{ .Values.argoController.image.repository }}:{{ .Values.argoController.image.tag }}
+          imagePullPolicy: {{ .Values.argoController.image.pullPolicy | quote }}
+          command:
+            - workflow-controller
+            - --namespaced
+            - --configmap={{ include "gretel-gcc.namePrefix" . }}argo-config
+          env:
+            - name: LEADER_ELECTION_IDENTITY
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          envFrom:
+            - {{- include "gretel-gcc.commonData.envFrom" . | nindent 14 }}
+          volumeMounts:
+            - {{- include "gretel-gcc.commonData.volumeMount" . | nindent 14 }}
+          {{- with .Values.argoController.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- include "gretel-gcc.podPlacement" .Values.argoController | nindent 6 }}
+      volumes:
+      - {{- include "gretel-gcc.commonData.volume" . | nindent 8 }}

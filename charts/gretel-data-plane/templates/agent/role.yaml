@@ -1,0 +1,16 @@
+{{- if .Values.gretelAgent._enabled }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}agent-role
+  labels:
+    app.kubernetes.io/component: agent
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "secrets"]
+    verbs: ["delete", "create", "patch", "get", "update", "list"]
+{{- end }}

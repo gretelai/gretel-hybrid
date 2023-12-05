@@ -1,0 +1,43 @@
+{{- if .Values.gretelAgent._enabled }}
+{{- if .Values.gretelAgent.extraCaCert }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}agent-cert
+  labels:
+    app.kubernetes.io/component: agent
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+data:
+  ca.crt: |
+    {{ .Values.gretelAgent.extraCaCert | nindent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}agent-env
+  labels:
+    app.kubernetes.io/component: agent
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+data:
+  GRETEL_WORKER_NAMESPACE: "{{ .Release.Namespace }}"
+  GRETEL_WORKER_RESOURCES: {{ .Values.gretelWorkers.model.resources | toJson | quote }}
+  GRETEL_WORKER_SA: "{{ include "gretel-gcc.gretelWorkers.model.serviceAccount.name" . }}"
+  GRETEL_PULL_SECRET: "{{ include "gretel-gcc.gretelWorkers.imagePullSecret.name" . }}"
+  GRETEL_WORKER_SECRET_NAME:  "{{ include "gretel-gcc.namePrefix" . }}worker-env-secret"
+  GPU_NODE_SELECTOR:  {{ .Values.gretelWorkers.model.gpu.nodeSelector | toJson | quote }}
+  CPU_NODE_SELECTOR:  {{ .Values.gretelWorkers.model.cpu.nodeSelector | toJson | quote }}
+  GPU_TOLERATIONS:  {{ .Values.gretelWorkers.model.gpu.tolerations | toJson | quote }}
+  CPU_TOLERATIONS:  {{ .Values.gretelWorkers.model.cpu.tolerations | toJson | quote }}
+  GPU_AFFINITY:  {{ .Values.gretelWorkers.model.gpu.affinity | toJson | quote }}
+  CPU_AFFINITY:  {{ .Values.gretelWorkers.model.cpu.affinity | toJson | quote }}
+  IMAGE_REGISTRY_OVERRIDE_HOST: "{{ .Values.gretelWorkers.images.registry }}"
+  WORKER_POD_LABELS: {{ include "gretel-gcc.gretelWorkers.podLabels" . | fromYaml | toJson | quote }}
+  WORKER_POD_ANNOTATIONS: {{ include "gretel-gcc.gretelWorkers.podAnnotations" . | fromYaml | toJson | quote }}
+  {{- if .Values.gretelAgent.extraCaCert }}
+  GRETEL_CA_CERT_CONFIGMAP_NAME: "agent-cert"
+  {{- end }}
+  GRETEL_ARTIFACT_ENDPOINT: "{{ required "gretelConfig.artifactEndpoint must be set!" .Values.gretelConfig.artifactEndpoint }}"
+  RUNNER_MODES: hybrid
+  GRETEL_RUNNER_MODE: hybrid
+{{- end }}

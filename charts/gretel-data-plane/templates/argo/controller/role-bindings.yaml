@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}argo-controller-rolebinding
+  labels:
+    app.kubernetes.io/component: argo-controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "gretel-gcc.namePrefix" . }}argo-controller-role
+subjects:
+  - kind: ServiceAccount
+    name: "{{ include "gretel-gcc.argoController.serviceAccount.name" . }}"

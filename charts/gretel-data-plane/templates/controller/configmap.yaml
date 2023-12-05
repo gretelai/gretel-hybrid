@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}controller-config
+  labels:
+    app.kubernetes.io/component: controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    pilot:
+      apiAddress: {{ .Values.gretelConfig.apiEndpoint }}
+      {{- with .Values.gretelConfig.projects }}
+      projects: {{ toJson . }}
+      {{- end }}
+    images:
+      {{- if .Values.gretelAgent._enabled }}
+      registry: "{{ .Values.gretelWorkers.images.registry }}"
+      {{- else }}
+      registry: "{{ required "gretelWorkers.images.registry must be set" .Values.gretelWorkers.images.registry }}"
+      {{- end }}
+      tag: "{{ .Values.gretelWorkers.images.tag }}"
+    workers:
+      {{- with include "gretel-gcc.gretelWorkers.podLabels" . }}
+      podLabels:
+        {{- . | nindent 8 }}
+      {{- end }}
+      {{- with include "gretel-gcc.gretelWorkers.podAnnotations" . }}
+      podAnnotations:
+        {{- . | nindent 8 }}
+      {{- end }}
+      {{- include "gretel-gcc.podPlacement" .Values.gretelWorkers.workflow | nindent 6 }}
+      {{- with .Values.gretelWorkers.workflow.resources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccount: "{{ include "gretel-gcc.gretelWorkers.workflow.serviceAccount.name" . }}"
+      {{- with (include "gretel-gcc.gretelWorkers.imagePullSecret.name" .) }}
+      imagePullSecretName: {{ . | quote }}
+      {{- end }}
+      envSecretName: {{ include "gretel-gcc.namePrefix" . }}worker-env-secret
+    {{- with include "gretel-gcc.argoArtifactRepository" . }}
+    logs:
+      repository:
+        {{- . | nindent 8 }}
+    argo:
+      repository:
+        {{- . | nindent 8 }}
+    {{- end }}
+    {{- if .Values.gretelAgent._enabled }}
+    runnerMode: RUNNER_MODE_HYBRID
+    {{- else }}
+    runnerMode: RUNNER_MODE_CLOUD
+    {{- end }}

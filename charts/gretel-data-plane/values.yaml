@@ -1,0 +1,261 @@
+## String to prepend to all Kubernetes resource names (except those named explicitly
+## via values). It is recommend to leave this empty, as the resources should be deployed
+## into a dedicated namespace anyway.
+namePrefix: ""
+## Identifier to use for the standard `app.kubernetes.io/name` label. Defaults to the chart
+## name
+appName: ""
+## Version to use for Gretel services deployed by this chart, i.e., the image tags to use.
+## Defaults to the chart's appVersion.
+appVersion: ""
+
+gretelConfig:
+  ## Gretel API endpoint
+  apiEndpoint: "https://api.gretel.cloud"
+  ## Deployment user's API key, used to authenticate to the Gretel API (one of apiKey or apiKeySecretRef is required)
+  apiKey: ""
+  ## Deployment user's API key set as GRETEL_API_KEY in an existing k8s secret. Used to authenticate
+  ## to the Gretel API (one of apiKey or apiKeySecretRef is required)
+  apiKeySecretRef: ""
+  ## URI of the object store ("sink bucket") used for storing Gretel artifacts (required)
+  artifactEndpoint: ""
+  ## Cloud provider region corresponding to the above artifact endpoint. This is optional,
+  ## but not setting it may require additional permissions for the involved service accounts
+  ## (e.g., on AWS S3, if you don't set this it is crucial that all service accounts accessing
+  ## the artifact endpoint have the s3:GetBucketLocation permission).
+  artifactRegion: ""
+  ## List of Gretel project names that this installation should handle. If left empty, this
+  ## installation will handle hybrid workloads from all projects that the deployment user
+  ## has at least administrator access to.
+  projects: []
+
+  ## Concatenated PEM-encoded certificates that should be trusted as root
+  ## Certificate Authorities (CA) when verifying TLS certificates. Replaces the system
+  ## trust roots when set.
+  caOverride: null
+
+## Gretel Controller configuration
+gretelController:
+  image:
+    ## The repository of the image to use.
+    repository: "public.ecr.aws/gretelai/gcc/controller"
+    ## The tag of the image to use. Defaults to the chart's app version.
+    tag: ""
+    ## The pull policy to use when pulling the image.
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    ## The name of the service account to use. Defaults to `controller` when unset.
+    name: ""
+    ## Whether or not the service account for the Gretel controller should be created.
+    create: true
+    ## Annotations to be applied to the created service account.
+    annotations: {}
+
+  supervisor:
+    ## Allows specifying a custom image to use in the supervisor container. Defaults to
+    ## gcc/supervisor-hybrid:<appVersion> when not set.
+    image: null
+
+  ## Node selector for the Gretel controller pod.
+  nodeSelector: {}
+  ## Affinity specification for the Gretel controller pod.
+  affinity: {}
+  ## Tolerations for the Gretel controller pod. See
+  ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
+  tolerations: []
+  ## Resource specifications for the Gretel controller container. See
+  ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
+  resources:
+    limits:
+      memory: 100Mi
+    requests:
+      cpu: "0.5"
+      memory: 100Mi
+
+  ## Additional labels to apply to the Gretel controller pod.
+  podLabels: {}
+  ## Additional annotations to apply to the Gretel controller pod.
+  podAnnotations: {}
+
+## @section Gretel Agent parameters
+## @descripton Provide configuration for the model agent that will connect to the Gretel Cloud.
+## @param gretelAgent.maxWorkers Number of workers to spawn concurrently from the agent
+gretelAgent:
+  image:
+    ## The repository of the image to use.
+    repository: "public.ecr.aws/gretelai/gcc/agent"
+    ## The tag of the image to use. Defaults to the chart's app version.
+    tag: ""
+    ## The pull policy to use when pulling the image.
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    ## The name of the service account to use. Defaults to `agent` when unset.
+    name: ""
+    ## Whether or not the service account for the Gretel agent should be created.
+    create: true
+    ## Annotations to be applied to the created service account.
+    annotations: {}
+
+  ## Node selector for the Gretel agent pod.
+  nodeSelector: {}
+  ## Affinity specification for the Gretel agent pod.
+  affinity: {}
+  ## Tolerations for the Gretel agent pod. See
+  ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
+  tolerations: []
+  ## Resource specifications for the Gretel agent container. See
+  ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
+  resources:
+    requests:
+      cpu: "0.5"
+      memory: 100Mi
+    limits:
+      memory: 300Mi
+
+  ## Additional labels to apply to the Gretel agent pod.
+  podLabels: {}
+  ## Additional annotations to apply to the Gretel agent pod.
+  podAnnotations: {}
+
+  _enabled: true
+
+## @section Gretel Worker parameters
+## @descripton Configure the workers launched by the Gretel Controller.
+## @param gretelWorkers.images.registry From which to look up action image repositories.
+## @param gretelWorkers.images.tag The tag to use for all action images.
+gretelWorkers:
+  images:
+    registry: "" # Automatically determine
+    tag: "" # Automatically determine
+
+  ## Environment variables for all Gretel workers.
+  env: {}
+
+  ## Labels to apply to all Gretel worker pods.
+  podLabels: {}
+  ## Annotations to apply to all Gretel worker pods.
+  podAnnotations: {}
+
+  ## Prevents all Gretel jobs from being evicted by the autoscaler
+  preventAutoscalerEviction: true
+
+  ## Configuration for worker pods executing workflow actions
+  workflow:
+    serviceAccount:
+      ## The name of the service account to use for workflow workers. Defaults to `workflow-worker`
+      ## when not specified.
+      name: ""
+      ## Whether or not the service account for workflow workers should be created.
+      create: true
+      ## Annotations to be applied to the created service account.
+      annotations: {}
+
+    ## Resource specification to use for workflow action workers. See
+    ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources:
+      requests:
+        cpu: "1"
+        memory: 4Gi
+      limits:
+        memory: 4Gi
+    ## Node selector to apply to workflow action workers. See
+    ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+    nodeSelector: {}
+    ## Node affinity to apply to workflow action workers. See
+    ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+    affinity: {}
+    ## Tolerations to apply to workflow action workers. See
+    ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+    tolerations: []
+
+  ## Configuration for worker pods executing model actions
+  model:
+    ## Maximum number of concurrent model workers. This should be set in accordance with the
+    ## cluster autoscaler's maximum node pool sizes for model jobs. If the service limits for
+    ## your account are lower than this value, service limits take precedence. Leave at 0
+    ## to let service limits define maximum concurrent model worker count.
+    maxConcurrent: 0
+
+    serviceAccount:
+      ## The name of the service account to use for model workers. Defaults to `model-worker`
+      ## when not specified.
+      name: ""
+      ## Whether or not the service account for model workers should be created.
+      create: true
+      ## Annotations to be applied to the created service account.
+      annotations: {}
+
+    ## Resource specification to use for model workers. See
+    ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources:
+      requests:
+        cpu: "1"
+        memory: 12Gi
+      limits:
+        memory: 12Gi
+    ## Configuration for worker pods executing CPU-based models
+    cpu:
+      ## Node selector to apply to CPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+      nodeSelector: {}
+      ## Node affinity to apply to CPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+      affinity: {}
+      ## Tolerations to apply to CPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      tolerations: []
+    ## Configuration for worker pods executing GPU-based models
+    gpu:
+      ## Node selector to apply to GPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+      nodeSelector: {}
+      ## Node affinity to apply to GPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+      affinity: {}
+      ## Tolerations to apply to GPU-based model workers. See
+      ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      tolerations: []
+
+## Argo Controller configuration
+argoController:
+  image:
+    ## The repository of the image to use.
+    repository: "quay.io/argoproj/workflow-controller"
+    ## The tag of the image to use.
+    tag: "v3.5.2"
+    ## The pull policy to use when pulling the image.
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    ## The name of the service account to use. Defaults to `argo-controller` when unset.
+    name: ""
+    ## Whether or not the service account for the argo controller should be created.
+    create: true
+    ## Annotations to be applied to the created service account.
+    annotations: {}
+
+  ## Node selector for the Argo controller pod.
+  nodeSelector: {}
+  ## Affinity specification for the Argo controller pod.
+  affinity: {}
+  ## Tolerations for the Argo controller pod. See
+  ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
+  tolerations: []
+  ## Resource specifications for the Argo controller container. See
+  ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
+  resources: {}
+
+## Configuration for the Argo workflow engine.
+## Most users do not need to adjust these settings.
+## See https://github.com/argoproj/argo-workflows/blob/master/docs/workflow-controller-configmap.yaml
+## for a list of possible options.
+argoConfig:
+  executor:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+  parallelism: 500
+  retentionPolicy:
+    completed: 10
+    failed: 50
+    errored: 50

@@ -1,0 +1,95 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}controller-role
+  labels:
+    app.kubernetes.io/component: controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - secrets
+      - serviceaccounts
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups: ["gretel.ai"]
+    resources:
+    - workflowruns
+    - workflowruns/status
+    verbs: ["*"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows"]
+    verbs: ["*"]
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - watch
+      - patch
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - patch
+      - deletecollection
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}workflow-worker-role
+  labels:
+    app.kubernetes.io/component: controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - watch
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - pods/log
+    verbs:
+      - get
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - create
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtasksets
+      - workflowartifactgctasks
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtasksets/status
+      - workflowartifactgctasks/status
+    verbs:
+      - patch

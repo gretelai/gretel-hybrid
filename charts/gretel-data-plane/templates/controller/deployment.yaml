@@ -1,0 +1,86 @@
+{{- if and .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef }}
+{{ fail "Both .gretelConfig.apiKey and .gretelConfig.apiKeySecretRef cannot be set. Only set one of these values." }}
+{{- else if and .Values.gretelAgent._enabled (not (or .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef)) -}}
+{{ fail "One of .gretelConfig.apiKey or .gretelConfig.apiKeySecretRef must be set" }}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}controller
+  labels:
+    app.kubernetes.io/component: controller
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      {{- include "gretel-gcc.selectorLabels" . | nindent 6 }}
+      workload: controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: controller
+        {{- include "gretel-gcc.selectorLabels" . | nindent 8 }}
+        {{- with .Values.gretelController.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        workload: controller
+      {{- with .Values.gretelController.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: "{{ include "gretel-gcc.gretelController.serviceAccount.name" . }}"
+      containers:
+        - name: controller
+          image: {{ .Values.gretelController.image.repository }}:{{ include "gretel-gcc.gretelController.image.tag" . }}
+          imagePullPolicy: {{ .Values.gretelController.image.pullPolicy | quote }}
+          {{- with .Values.gretelController.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          env:
+            - name: KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBE_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+            {{- if .Values.gretelConfig.apiKeySecretRef }}
+            - name: GRETEL_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.gretelConfig.apiKeySecretRef }}
+                  key: GRETEL_API_KEY
+            {{- end }}
+            {{- if .Values.gretelConfig.apiKey }}
+            - name: GRETEL_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "gretel-gcc.namePrefix" . }}controller-secret
+                  key: token
+            {{- end }}
+            {{- if .Values.gretelAgent._enabled }}
+            {{- with .Values.gretelConfig.artifactEndpoint }}
+            - name: GRETEL_ARTIFACT_ENDPOINT
+              value: "{{ . }}"
+            {{- end }}
+            {{- end }}
+            - name: GRETEL_GCC_SUPERVISOR_IMAGE
+              value: {{ include "gretel-gcc.gretelController.supervisor.image" . | quote }}
+          envFrom:
+            - {{- include "gretel-gcc.commonData.envFrom" . | nindent 14 }}
+          volumeMounts:
+            - {{- include "gretel-gcc.commonData.volumeMount" . | nindent 14 }}
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+      - {{- include "gretel-gcc.commonData.volume" . | nindent 8 }}
+      - name: config
+        configMap:
+          name: {{ include "gretel-gcc.namePrefix" . }}controller-config
+      {{- include "gretel-gcc.podPlacement" .Values.gretelController | nindent 6 }}

@@ -1,0 +1,82 @@
+{{- if .Values.gretelAgent._enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}agent
+  labels:
+    app.kubernetes.io/component: agent
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: agent
+      {{- include "gretel-gcc.selectorLabels" . | nindent 6 }}
+      workload: agent
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- with .Values.gretelAgent.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/component: agent
+        {{- include "gretel-gcc.selectorLabels" . | nindent 8 }}
+        workload: agent
+        {{- with .Values.gretelAgent.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: "{{ include "gretel-gcc.gretelAgent.serviceAccount.name" . }}"
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: agent
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.gretelAgent.image.repository }}:{{ include "gretel-gcc.gretelAgent.image.tag" . }}
+          imagePullPolicy: {{ .Values.gretelAgent.image.pullPolicy | quote }}
+          {{- with .Values.gretelAgent.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          ports:
+            - containerPort: 8080
+              name: prometheus-port
+          args: [
+            "agent", "start",
+            "--driver", "k8s",
+            "--enable-prometheus", "true",
+            "--max-workers", "{{ .Values.gretelWorkers.model.maxConcurrent }}",
+            {{- with .Values.gretelConfig.projects }}
+            "--project", "{{ join "," . }}"
+            {{- else }}
+            "--project", "all",
+            {{- end }}
+            "--same-org-only",
+            "--auto-accept-project-invites",
+          ]
+
+          envFrom:
+          - {{- include "gretel-gcc.commonData.envFrom" . | nindent 12 }}
+          - secretRef:
+              name: {{ include "gretel-gcc.namePrefix" . }}agent-secret
+          - configMapRef:
+              name: {{ include "gretel-gcc.namePrefix" . }}agent-env
+          volumeMounts:
+          - {{- include "gretel-gcc.commonData.volumeMount" . | nindent 12 }}
+      volumes:
+      - {{- include "gretel-gcc.commonData.volume" . | nindent 8 }}
+      {{- include "gretel-gcc.podPlacement" .Values.gretelAgent | nindent 6 }}
+{{- end }}
