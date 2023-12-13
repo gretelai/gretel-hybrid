@@ -141,4 +141,6 @@ module "gretel_hybrid" {
   gretel_credentials_encryption_key_name     = "credentials-encryption-key"
   gretel_workflow_worker_gcp_service_account = "${var.deployment_name}-workflow-worker"
   gretel_model_worker_gcp_service_account    = "${var.deployment_name}-model-worker"
+
+  extra_helm_values = var.extra_helm_values
 }

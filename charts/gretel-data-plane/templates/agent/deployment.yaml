@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
+        chart-config-hash: {{ toYaml .Values | sha256sum }}
         {{- with .Values.gretelAgent.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
