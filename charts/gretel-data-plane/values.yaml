@@ -72,6 +72,8 @@ gretelController:
       cpu: "0.5"
       memory: 100Mi
 
+  ## Additional labels to apply to the Gretel controller deployment.
+  deploymentLabels: {}
   ## Additional labels to apply to the Gretel controller pod.
   podLabels: {}
   ## Additional annotations to apply to the Gretel controller pod.
@@ -112,6 +114,8 @@ gretelAgent:
     limits:
       memory: 300Mi
 
+  ## Additional labels to apply to the Gretel agent deployment.
+  deploymentLabels: {}
   ## Additional labels to apply to the Gretel agent pod.
   podLabels: {}
   ## Additional annotations to apply to the Gretel agent pod.
@@ -243,6 +247,13 @@ argoController:
   ## Resource specifications for the Argo controller container. See
   ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
   resources: {}
+
+  ## Additional labels to apply to the Gretel argo deployment.
+  deploymentLabels: {}
+  ## Additional labels to apply to the Gretel argo pod.
+  podLabels: {}
+  ## Additional annotations to apply to the Gretel argo pod.
+  podAnnotations: {}
 
 ## Configuration for the Argo workflow engine.
 ## Most users do not need to adjust these settings.

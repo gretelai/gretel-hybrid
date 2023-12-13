@@ -6,6 +6,9 @@ metadata:
   labels:
     app.kubernetes.io/component: agent
     {{- include "gretel-gcc.labels" . | nindent 4 }}
+    {{- with .Values.gretelAgent.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: 1
   selector:

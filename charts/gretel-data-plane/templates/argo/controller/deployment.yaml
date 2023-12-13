@@ -5,6 +5,9 @@ metadata:
   labels:
     app.kubernetes.io/component: argo-controller
     {{- include "gretel-gcc.labels" . | nindent 4 }}
+    {{- with .Values.argoController.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -13,10 +16,17 @@ spec:
       workload: controller
   template:
     metadata:
+      {{- with .Values.argoController.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/component: argo-controller
         {{- include "gretel-gcc.selectorLabels" . | nindent 8 }}
         workload: controller
+        {{- with .Values.argoController.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: "{{ include "gretel-gcc.argoController.serviceAccount.name" . }}"
       containers:

@@ -10,6 +10,9 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     {{- include "gretel-gcc.labels" . | nindent 4 }}
+    {{- with .Values.gretelController.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: 1
   selector:
