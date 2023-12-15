@@ -1,8 +1,0 @@
-project_id                = "my-gcp-project"
-gcloud_platform           = "darwin"
-region                    = "us-west3"
-source_bucket_name        = "gretel-hybrid-demo-source-bucket"
-sink_bucket_name          = "gretel-hybrid-demo-sink-bucket"
-terraform_service_account = "terraform-execution@my-gcp-project.iam.gserviceaccount.com"
-cluster_name              = "gretel-hybrid-cluster"
-gretel_api_key            = ""
