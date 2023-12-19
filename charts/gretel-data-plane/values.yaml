@@ -208,6 +208,9 @@ gretelWorkers:
       ## Tolerations to apply to CPU-based model workers. See
       ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
       tolerations: []
+      ## Security context to be passed to the CPU-based model worker pods. See
+      ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      securityContext: {}
     ## Configuration for worker pods executing GPU-based models
     gpu:
       ## Node selector to apply to GPU-based model workers. See
@@ -219,6 +222,9 @@ gretelWorkers:
       ## Tolerations to apply to GPU-based model workers. See
       ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
       tolerations: []
+      ## Security context to be passed to the GPU-based model worker pods. See
+      ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      securityContext: {}
 
 ## Argo Controller configuration
 argoController:

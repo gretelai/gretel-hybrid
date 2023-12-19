@@ -31,6 +31,8 @@ data:
   CPU_TOLERATIONS:  {{ .Values.gretelWorkers.model.cpu.tolerations | toJson | quote }}
   GPU_AFFINITY:  {{ .Values.gretelWorkers.model.gpu.affinity | toJson | quote }}
   CPU_AFFINITY:  {{ .Values.gretelWorkers.model.cpu.affinity | toJson | quote }}
+  CPU_WORKER_SECURITY_CONTEXT: {{ .Values.gretelWorkers.model.cpu.securityContext | toJson | quote }}
+  GPU_WORKER_SECURITY_CONTEXT: {{ .Values.gretelWorkers.model.gpu.securityContext | toJson | quote }}
   IMAGE_REGISTRY_OVERRIDE_HOST: "{{ .Values.gretelWorkers.images.registry }}"
   WORKER_POD_LABELS: {{ include "gretel-gcc.gretelWorkers.podLabels" . | fromYaml | toJson | quote }}
   WORKER_POD_ANNOTATIONS: {{ include "gretel-gcc.gretelWorkers.podAnnotations" . | fromYaml | toJson | quote }}

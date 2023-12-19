@@ -14,6 +14,8 @@ data:
   CPU_NODE_SELECTOR:  {{ .Values.gretelConfig.cpuNodeSelector | toJson | quote }}
   GPU_TOLERATIONS:  {{ .Values.gretelConfig.gpuTolerations | toJson | quote }}
   CPU_TOLERATIONS:  {{ .Values.gretelConfig.cpuTolerations | toJson | quote }}
+  GPU_WORKER_SECURITY_CONTEXT: {{ .Values.gretelConfig.gpuSecurityContext | toJson | quote }}
+  CPU_WORKER_SECURITY_CONTEXT: {{ .Values.gretelConfig.cpuSecurityContext | toJson | quote }}
   GRETEL_CPU_COUNT:  "{{ .Values.gretelConfig.cpuCount }}"
   {{- if .Values.gretelConfig.extraCaCert }}
   GRETEL_CA_CERT_CONFIGMAP_NAME: {{ include "gretel-agent.extraCaCertConfigmapName" . }}

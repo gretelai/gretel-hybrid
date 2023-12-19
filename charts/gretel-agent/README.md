@@ -4,6 +4,10 @@
 
 Once installed, run `helm test gretel-agent` to test running an amplify model against the project/ bucket you've chosen.
 
+## Setting the API Key externally
+
+If you're using a secrets store CSI driver and would like to store your Gretel API key using an external service (like AWS Secrets Manager), [sync your external secret as a k8s secret](https://secrets-store-csi-driver.sigs.k8s.io/topics/sync-as-kubernetes-secret) and pass the name of the resulting k8s secret to `gretelConfig.apiKeySecretRef`. The opaque secret should contain the GRETEL_API_KEY key with your API key as the value. Leave `gretelConfig.apiKey` unset when using `gretelConfig.apiKeySecretRef`.
+
 ## Parameters
 
 ### Common parameters
@@ -43,12 +47,12 @@ Once installed, run `helm test gretel-agent` to test running an amplify model ag
 | `gretelConfig.gpuNodeSelector`           | Node selector for selecting GPUs based jobs                                                                                                               | `{}`                       |
 | `gretelConfig.cpuNodeSelector`           | Node selector for selecting CPU based jobs                                                                                                                | `{}`                       |
 | `gretelConfig.gpuTolerations`            | Tolerations for GPU based jobs                                                                                                                            | `[]`                       |
+| `gretelConfig.gpuSecurityContext`        | Security context for the GPU-based pods                                                                                                                   | `{}`                       |
 | `gretelConfig.cpuTolerations`            | Tolerations for CPU based jobs                                                                                                                            | `[]`                       |
 | `gretelConfig.cpuCount`                  | Integer value specifying number of CPUs to use for workers                                                                                                | `""`                       |
+| `gretelConfig.cpuSecurityContext`        | Security context for the CPU-based pods                                                                                                                   | `{}`                       |
 | `gretelConfig.extraCaCert`               | PEM certificate file contents to be used by the agent/workers                                                                                             | `""`                       |
 | `gretelConfig.imageRegistryOverrideHost` | URL to override the image registry used to fetch worker images                                                                                            | `""`                       |
 | `gretelConfig.preventAutoscalerEviction` | Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler                                                                              | `true`                     |
 | `gretelConfig.podLabels`                 | Labels to apply to Pods deployed by this chart                                                                                                            | `{}`                       |
 | `gretelConfig.deploymentLabels`          | Labels to apply to Deployments deployed by this chart                                                                                                     | `{}`                       |
-
-> If you're using a secrets store CSI driver and would like to store your Gretel API key using an external service (like AWS Secrets Manager), [sync your external secret as a k8s secret](https://secrets-store-csi-driver.sigs.k8s.io/topics/sync-as-kubernetes-secret) and pass the name of the resulting k8s secret to `gretelConfig.apiKeySecretRef`. The opaque secret should contain the GRETEL_API_KEY key with your API key as the value. Leave `gretelConfig.apiKey` unset when using `gretelConfig.apiKeySecretRef`.

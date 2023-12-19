@@ -99,8 +99,10 @@ affinity: {}
 ## @param gretelConfig.gpuNodeSelector Node selector for selecting GPUs based jobs
 ## @param gretelConfig.cpuNodeSelector Node selector for selecting CPU based jobs
 ## @param gretelConfig.gpuTolerations Tolerations for GPU based jobs
+## @param gretelConfig.gpuSecurityContext Security context for the GPU-based pods
 ## @param gretelConfig.cpuTolerations Tolerations for CPU based jobs
 ## @param gretelConfig.cpuCount Integer value specifying number of CPUs to use for workers
+## @param gretelConfig.cpuSecurityContext Security context for the CPU-based pods
 ## @param gretelConfig.extraCaCert PEM certificate file contents to be used by the agent/workers
 ## @param gretelConfig.imageRegistryOverrideHost URL to override the image registry used to fetch worker images
 ## @param gretelConfig.preventAutoscalerEviction Adds an annotation to Gretel jobs to prevent being evicted by the autoscaler
@@ -120,6 +122,8 @@ gretelConfig:
   cpuNodeSelector: {}
   gpuTolerations: []
   cpuTolerations: []
+  gpuSecurityContext: {}
+  cpuSecurityContext: {}
   cpuCount: ""
   extraCaCert: ""
   imageRegistryOverrideHost: ""
