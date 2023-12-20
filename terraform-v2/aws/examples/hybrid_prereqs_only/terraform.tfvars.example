@@ -1,0 +1,23 @@
+# The region your EKS cluster is deployed in.
+region                                  = "us-west-2"
+
+# The name of your existing EKS cluster.
+existing_eks_cluster_name               = "hybrid-sandbox-cluster"
+
+# The arn for the OIDC provider for your EKS cluster. 
+# Accessible in the AWS IAM Console under "Identity Providers"
+existing_eks_cluster_oidc_provider_arn  = "arn:aws:iam::012345678912:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# The name of the existing EKS namespace you have provisioned for Gretel Hybrid.
+existing_gretel_hybrid_namespace        = "gretel-hybrid"
+
+# Suffixes are added to this name when creating resources, so this is an input you will
+# see reflected in resource names within AWS.
+deployment_name                         = "hybrid-sandbox"
+
+# S3 bucket names must be globally unique! We suggest renaming these.
+gretel_source_bucket_name               = "hybrid-sandbox-source"
+gretel_sink_bucket_name                 = "hybrid-sandbox-sink"
+
+# Set this to be an IAM user or role which you can use with the AWS CLI from your local environment.
+gretel_credentials_encryption_user_arns = ["arn:aws:iam::012345678912:role/insert-role-name-here"]

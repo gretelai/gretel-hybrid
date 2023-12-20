@@ -1,0 +1,7 @@
+terraform {
+  # backend "s3" {
+  #   bucket = "my-unique-tf-state-bucket-name"
+  #   key    = "state/aws-gretel-hybrid/terraform.tfstate"
+  #   region = "us-west-2"
+  # }
+}

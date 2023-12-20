@@ -145,11 +145,13 @@ variable "gretel_max_workers" {
 variable "gretel_gpu_model_worker_node_selector" {
   description = "Node selector for scheduling GPU based model jobs. Set to null to allow GPU jobs to be scheduled on any node (not recommended)."
   type        = map(string)
+  default     = {}
 }
 
 variable "gretel_cpu_model_worker_node_selector" {
   description = "Node selector for scheduling CPU based model jobs. Set to null to allow CPU jobs to be scheduled on any node (not recommended)."
   type        = map(string)
+  default     = {}
 }
 
 variable "gretel_gpu_model_worker_tolerations" {
@@ -159,6 +161,7 @@ variable "gretel_gpu_model_worker_tolerations" {
     value  = string
     effect = string
   }))
+  default = []
 }
 
 variable "gretel_cpu_model_worker_tolerations" {
@@ -168,6 +171,7 @@ variable "gretel_cpu_model_worker_tolerations" {
     value  = string
     effect = string
   }))
+  default = []
 }
 
 variable "gretel_image_registry_override_host" {
@@ -186,4 +190,10 @@ variable "extra_helm_values" {
   description = "Additional values to pass to the Helm chart"
   type        = map(any)
   default     = {}
+}
+
+variable "skip_kubernetes_resources" {
+  description = "Control whether this module deploys the k8s namespace and the Gretel Hybrid Helm Chart."
+  type        = bool
+  default     = false
 }

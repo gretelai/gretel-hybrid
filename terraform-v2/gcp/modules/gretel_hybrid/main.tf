@@ -156,11 +156,11 @@ resource "helm_release" "gretel_hybrid_agent" {
 
         cpu = {
           nodeSelector = var.gretel_cpu_model_worker_node_selector
-          tolerations  = var.gretel_cpu_model_worker_tolerations
+          tolerations  = local.cpu_tolerations
         }
         gpu = {
           nodeSelector = var.gretel_gpu_model_worker_node_selector
-          tolerations  = var.gretel_gpu_model_worker_tolerations
+          tolerations  = local.gpu_tolerations
         }
       }
     }

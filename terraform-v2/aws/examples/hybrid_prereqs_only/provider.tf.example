@@ -1,0 +1,8 @@
+# Uncomment the aws provider to deploy this module directly (if you are not calling it from a parent module)
+provider "aws" {
+  region = local.region
+  # Uncomment the below block if you are authenticated in Account A and need to assume a role and deploy to Account B
+  # assume_role {
+  #   role_arn = "arn:aws:iam::012345678912:role/TerraformExecution"
+  # }
+}

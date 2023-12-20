@@ -201,12 +201,14 @@ module "gretel_model_worker_irsa_role" {
 }
 
 resource "kubernetes_namespace" "gretel_hybrid_namespace" {
+  count = var.skip_kubernetes_resources ? 0 : 1
   metadata {
     name = var.gretel_hybrid_namespace
   }
 }
 
 resource "helm_release" "gretel_hybrid_agent" {
+  count      = var.skip_kubernetes_resources ? 0 : 1
   name       = "gretel-agent"
   repository = var.gretel_helm_repo
   chart      = var.gretel_chart
@@ -247,11 +249,11 @@ resource "helm_release" "gretel_hybrid_agent" {
           }
           cpu = {
             nodeSelector = var.gretel_cpu_model_worker_node_selector
-            tolerations  = var.gretel_cpu_model_worker_tolerations
+            tolerations  = local.cpu_tolerations
           }
           gpu = {
             nodeSelector = var.gretel_gpu_model_worker_node_selector
-            tolerations  = var.gretel_gpu_model_worker_tolerations
+            tolerations  = local.gpu_tolerations
           }
         }
 
