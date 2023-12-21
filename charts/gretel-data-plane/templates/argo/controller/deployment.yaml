@@ -28,11 +28,19 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: "{{ include "gretel-gcc.argoController.serviceAccount.name" . }}"
       containers:
         - name: controller
           image: {{ .Values.argoController.image.repository }}:{{ .Values.argoController.image.tag }}
           imagePullPolicy: {{ .Values.argoController.image.pullPolicy | quote }}
+          {{- with include "gretel-gcc.argoController.securityContext" . }}
+          securityContext:
+            {{- . | nindent 12 }}
+          {{- end }}
           command:
             - workflow-controller
             - --namespaced

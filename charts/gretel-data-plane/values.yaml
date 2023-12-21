@@ -8,6 +8,11 @@ appName: ""
 ## Version to use for Gretel services deployed by this chart, i.e., the image tags to use.
 ## Defaults to the chart's appVersion.
 appVersion: ""
+## Additional pull secret for ALL images, including workflow and model images
+imagePullSecrets: []
+## Security Context to apply to all containers, in the absence of a more specific config
+## except for model workers, which have to have their security context explicitly set
+securityContext: {}
 
 gretelConfig:
   ## Gretel API endpoint
@@ -63,6 +68,9 @@ gretelController:
   ## Tolerations for the Gretel controller pod. See
   ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
   tolerations: []
+  ## Security context for the Gretel controller container. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   ## Resource specifications for the Gretel controller container. See
   ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
   resources:
@@ -120,6 +128,9 @@ gretelAgent:
   podLabels: {}
   ## Additional annotations to apply to the Gretel agent pod.
   podAnnotations: {}
+  ## Security context to apply to the Gretel agent container. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
 
   _enabled: true
 
@@ -129,7 +140,7 @@ gretelAgent:
 ## @param gretelWorkers.images.tag The tag to use for all action images.
 gretelWorkers:
   images:
-    registry: "" # Automatically determine
+    registry: "" # Automatically determine, but override in the case of a pull through repository
     tag: "" # Automatically determine
 
   ## Environment variables for all Gretel workers.
@@ -171,6 +182,9 @@ gretelWorkers:
     ## Tolerations to apply to workflow action workers. See
     ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     tolerations: []
+    ## Security context to apply workflow action workers. See
+    ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    securityContext: {}
 
   ## Configuration for worker pods executing model actions
   model:
@@ -250,6 +264,9 @@ argoController:
   ## Tolerations for the Argo controller pod. See
   ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
   tolerations: []
+  ## Security context for the Argo controller pod. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   ## Resource specifications for the Argo controller container. See
   ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
   resources: {}
