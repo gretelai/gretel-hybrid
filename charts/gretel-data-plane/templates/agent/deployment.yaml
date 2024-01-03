@@ -78,6 +78,10 @@ spec:
           - {{- include "gretel-gcc.commonData.envFrom" . | nindent 12 }}
           - secretRef:
               name: {{ include "gretel-gcc.namePrefix" . }}agent-secret
+          {{- with .Values.gretelConfig.apiKeySecretRef }}
+          - secretRef:
+              name: {{ quote . }}
+          {{- end }}
           - configMapRef:
               name: {{ include "gretel-gcc.namePrefix" . }}agent-env
           volumeMounts:
