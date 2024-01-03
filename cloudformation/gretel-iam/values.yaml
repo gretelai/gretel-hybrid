@@ -1,0 +1,16 @@
+# Existing aws resources passed as inputs
+oidc_provider_arn: arn:aws:iam::555:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/123
+kms_key_arn: arn:aws:kms:us-west-2:5555:key/abc
+source_bucket_name: gretel-hybrid-source
+sink_bucket_name: gretel-hybrid-sink
+
+# Existing k8s resources passed as inputs
+hybrid_namespace: gretel-hybrid
+workflow_worker_service_account: workflow-worker
+model_worker_service_account: model-worker
+
+# Values used to create resources within the CFN stack
+iam_policy_workflow_worker: gretel-hybrid-workflow-worker-policy
+iam_policy_model_worker: gretel-hybrid-model-worker-policy
+iam_role_workflow_worker: gretel-hybrid-workflow-worker-role
+iam_role_model_worker: gretel-hybrid-model-worker-role
