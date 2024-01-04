@@ -51,7 +51,7 @@ locals {
 
 module "prereqs" {
   source              = "../../modules/prereqs"
-  resource_group_name = local.deployment_name
+  resource_group_name = local.resource_group_name
   region              = local.region
   azure_tags          = local.azure_tags
 }
