@@ -14,7 +14,7 @@ data:
       {{- end }}
     images:
       {{- if .Values.gretelAgent._enabled }}
-      registry: "{{ .Values.gretelWorkers.images.registry }}"
+      registry: "{{ trimSuffix "/" .Values.gretelWorkers.images.registry  }}"
       {{- else }}
       registry: "{{ required "gretelWorkers.images.registry must be set" .Values.gretelWorkers.images.registry }}"
       {{- end }}
@@ -34,9 +34,8 @@ data:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccount: "{{ include "gretel-gcc.gretelWorkers.workflow.serviceAccount.name" . }}"
-      {{- with (include "gretel-gcc.gretelWorkers.imagePullSecret.name" .) }}
-      imagePullSecretName: {{ . | quote }}
-      {{- end }}
+      imagePullSecrets:
+        {{- include "gretel-gcc.gretelWorkers.imagePullSecrets" . | nindent 8 }}
       envSecretName: {{ include "gretel-gcc.namePrefix" . }}worker-env-secret
     {{- with include "gretel-gcc.argoArtifactRepository" . }}
     logs:

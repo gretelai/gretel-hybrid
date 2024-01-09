@@ -8,6 +8,8 @@ appName: ""
 ## Version to use for Gretel services deployed by this chart, i.e., the image tags to use.
 ## Defaults to the chart's appVersion.
 appVersion: ""
+## List of strings for additional pull secrets for ALL images, including workflow and model images
+imagePullSecrets: []
 
 gretelConfig:
   ## Gretel API endpoint
@@ -129,7 +131,7 @@ gretelAgent:
 ## @param gretelWorkers.images.tag The tag to use for all action images.
 gretelWorkers:
   images:
-    registry: "" # Automatically determine
+    registry: "" # Automatically determine, but override in the case of a pull through repository
     tag: "" # Automatically determine
 
   ## Environment variables for all Gretel workers.
