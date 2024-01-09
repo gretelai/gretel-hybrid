@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -euo pipefail
 gretel() {
-    /entrypoint-wrapper.sh "$@"
+    /gretel-entrypoint-wrapper.sh "$@"
 }
 CURRENT_DIR=$(dirname "$0")
 
