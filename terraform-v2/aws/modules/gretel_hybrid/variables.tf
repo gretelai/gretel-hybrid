@@ -139,7 +139,7 @@ variable "gretel_model_worker_pod_cpu_count" {
 variable "gretel_max_workers" {
   type        = string
   description = "Number of parallel jobs that can be spawned concurrently from the agent. This cannot exceed the number of licensed workers purchased from gretel."
-  default     = "1"
+  default     = "0"
 }
 
 variable "gretel_gpu_model_worker_node_selector" {
