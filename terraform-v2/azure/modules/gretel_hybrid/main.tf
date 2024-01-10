@@ -179,6 +179,7 @@ resource "azurerm_federated_identity_credential" "gretel_model_worker" {
 }
 
 resource "helm_release" "gretel_hybrid_agent" {
+  count      = var.skip_kubernetes_resources ? 0 : 1
   name       = "gretel-agent"
   repository = var.gretel_helm_repo
   chart      = var.gretel_chart

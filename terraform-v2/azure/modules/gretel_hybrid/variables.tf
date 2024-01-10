@@ -187,3 +187,10 @@ variable "extra_helm_values" {
   type        = map(any)
   default     = {}
 }
+
+variable "skip_kubernetes_resources" {
+  description = "Control whether this module deploys the k8s namespace and the Gretel Hybrid Helm Chart."
+  type        = bool
+  default     = false
+}
+

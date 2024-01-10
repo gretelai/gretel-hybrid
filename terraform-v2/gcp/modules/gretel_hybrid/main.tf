@@ -100,12 +100,14 @@ module "gretel_hybrid_sink_bucket" {
   }
 }
 resource "kubernetes_namespace" "gretel_hybrid_namespace" {
+  count = var.skip_kubernetes_resources ? 0 : 1
   metadata {
     name = var.gretel_hybrid_namespace
   }
 }
 
 resource "helm_release" "gretel_hybrid_agent" {
+  count      = var.skip_kubernetes_resources ? 0 : 1
   name       = "gretel-agent"
   repository = var.gretel_helm_repo
   chart      = var.gretel_chart
