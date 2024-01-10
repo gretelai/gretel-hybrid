@@ -12,3 +12,11 @@
 {{- end }}
 {{- toYaml $annotations }}
 {{- end }}
+
+{{- define "gretel-gcc.gretelConfig.apiKeySecretName" }}
+{{- if .Values.gretelConfig.apiKey }}
+{{- include "gretel-gcc.namePrefix" . }}gretel-api-key
+{{- else }}
+{{- .Values.gretelConfig.apiKeySecretRef }}
+{{- end }}
+{{- end -}}

@@ -12,6 +12,9 @@ data:
       {{- with .Values.gretelConfig.projects }}
       projects: {{ toJson . }}
       {{- end }}
+      {{- with (include "gretel-gcc.gretelConfig.apiKeySecretName" .) }}
+      tokenSecretName: {{ . | quote}}
+      {{- end }}
     images:
       {{- if .Values.gretelAgent._enabled }}
       registry: "{{ trimSuffix "/" .Values.gretelWorkers.images.registry  }}"
@@ -39,8 +42,7 @@ data:
       envSecretName: {{ include "gretel-gcc.namePrefix" . }}worker-env-secret
     {{- with include "gretel-gcc.argoArtifactRepository" . }}
     logs:
-      repository:
-        {{- . | nindent 8 }}
+      enableCloudLogs: true
     argo:
       repository:
         {{- . | nindent 8 }}

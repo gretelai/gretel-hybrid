@@ -54,19 +54,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.serviceAccountName
-            {{- if .Values.gretelConfig.apiKeySecretRef }}
+            {{- with (include "gretel-gcc.gretelConfig.apiKeySecretName" .) }}
             - name: GRETEL_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.gretelConfig.apiKeySecretRef }}
+                  name: {{ . | quote }}
                   key: GRETEL_API_KEY
-            {{- end }}
-            {{- if .Values.gretelConfig.apiKey }}
-            - name: GRETEL_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "gretel-gcc.namePrefix" . }}controller-secret
-                  key: token
             {{- end }}
             {{- if .Values.gretelAgent._enabled }}
             {{- with .Values.gretelConfig.artifactEndpoint }}
