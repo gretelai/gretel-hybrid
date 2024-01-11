@@ -12,6 +12,10 @@ rules:
       - configmaps
       - secrets
       - serviceaccounts
+      # This is necessary in order to read the UID of our own namespace for determining
+      # a deployment fingerprint. The permission applies to the containing namespace only,
+      # not all namespaces.
+      - namespaces
     verbs:
       - get
       - watch

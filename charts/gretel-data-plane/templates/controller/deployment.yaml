@@ -69,6 +69,10 @@ spec:
             {{- end }}
             - name: GRETEL_GCC_SUPERVISOR_IMAGE
               value: {{ include "gretel-gcc.gretelController.supervisor.image" . | quote }}
+            {{- if .Values._cluster_checkin }}
+            - name: GRETEL_CLUSTER_SECRET_NAME
+              value: "{{ include "gretel-gcc.namePrefix" . }}cluster-secret"
+            {{- end }}
           envFrom:
             - {{- include "gretel-gcc.commonData.envFrom" . | nindent 14 }}
           volumeMounts:

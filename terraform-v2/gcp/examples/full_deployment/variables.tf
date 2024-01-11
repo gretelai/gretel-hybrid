@@ -113,6 +113,6 @@ variable "gretel_projects" {
 
 variable "extra_helm_values" {
   description = "Additional values to pass to the Gretel Helm chart"
-  type        = map(any)
+  type        = any
   default     = {}
 }
