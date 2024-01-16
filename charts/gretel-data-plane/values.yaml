@@ -10,6 +10,11 @@ appName: ""
 appVersion: ""
 ## List of strings for additional pull secrets for ALL images, including workflow and model images
 imagePullSecrets: []
+## Security Context to apply to all containers, in the absence of a more specific config
+## except for model workers, which have to have their security context explicitly set
+securityContext: {}
+## Environment variables for all containers, workers and controllers
+env: {}
 
 gretelConfig:
   ## Gretel API endpoint
@@ -65,6 +70,9 @@ gretelController:
   ## Tolerations for the Gretel controller pod. See
   ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
   tolerations: []
+  ## Security context for the Gretel controller container. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   ## Resource specifications for the Gretel controller container. See
   ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
   resources:
@@ -122,6 +130,9 @@ gretelAgent:
   podLabels: {}
   ## Additional annotations to apply to the Gretel agent pod.
   podAnnotations: {}
+  ## Security context to apply to the Gretel agent container. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
 
   _enabled: true
 
@@ -173,6 +184,9 @@ gretelWorkers:
     ## Tolerations to apply to workflow action workers. See
     ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     tolerations: []
+    ## Security context to apply workflow action workers. See
+    ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    securityContext: {}
 
   ## Configuration for worker pods executing model actions
   model:
@@ -252,9 +266,17 @@ argoController:
   ## Tolerations for the Argo controller pod. See
   ## https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ .
   tolerations: []
+  ## Security context for the Argo controller pod. See
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   ## Resource specifications for the Argo controller container. See
   ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ .
-  resources: {}
+  resources:
+    limits:
+      memory: 1000Mi
+    requests:
+      cpu: "0.5"
+      memory: 1000Mi
 
   ## Additional labels to apply to the Gretel argo deployment.
   deploymentLabels: {}

@@ -40,6 +40,10 @@ data:
       imagePullSecrets:
         {{- include "gretel-gcc.gretelWorkers.imagePullSecrets" . | nindent 8 }}
       envSecretName: {{ include "gretel-gcc.namePrefix" . }}worker-env-secret
+      {{- with include "gretel-gcc.gretelWorkers.workflow.securityContext" . }}
+      securityContext:
+        {{- . | nindent 8 }}
+      {{- end }}
     {{- with include "gretel-gcc.argoArtifactRepository" . }}
     logs:
       enableCloudLogs: true

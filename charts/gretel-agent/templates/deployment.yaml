@@ -71,6 +71,9 @@ spec:
             mountPath: /usr/local/share/ca-certificates/
           - name: ssl-certs
             mountPath: /etc/ssl/certs
+            volumeMounts:
+          - name: tmp
+            mountPath: "/tmp"
       volumes:
       - name: override-cert
         configMap:
@@ -78,6 +81,8 @@ spec:
           defaultMode: 0644
           optional: true
       - name: ssl-certs
+        emptyDir: {}
+      - name: tmp
         emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:

@@ -33,12 +33,12 @@ spec:
     spec:
       {{- include "gretel-gcc.imagePullSecrets" . | nindent 6 }}
       serviceAccountName: "{{ include "gretel-gcc.gretelAgent.serviceAccount.name" . }}"
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: agent
+          {{- with include "gretel-gcc.gretelAgent.securityContext" . }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- . | nindent 12 }}
+          {{- end }}
           image: {{ .Values.gretelAgent.image.repository }}:{{ include "gretel-gcc.gretelAgent.image.tag" . }}
           imagePullPolicy: {{ .Values.gretelAgent.image.pullPolicy | quote }}
           {{- with .Values.gretelAgent.resources }}
@@ -96,7 +96,11 @@ spec:
               name: {{ include "gretel-gcc.namePrefix" . }}agent-env
           volumeMounts:
           - {{- include "gretel-gcc.commonData.volumeMount" . | nindent 12 }}
+          - name: tmp
+            mountPath: "/tmp"
       volumes:
       - {{- include "gretel-gcc.commonData.volume" . | nindent 8 }}
+      - name: tmp
+        emptyDir: {}
       {{- include "gretel-gcc.podPlacement" .Values.gretelAgent | nindent 6 }}
 {{- end }}

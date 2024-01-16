@@ -41,6 +41,10 @@ spec:
         - name: controller
           image: {{ .Values.gretelController.image.repository }}:{{ include "gretel-gcc.gretelController.image.tag" . }}
           imagePullPolicy: {{ .Values.gretelController.image.pullPolicy | quote }}
+          {{- with include "gretel-gcc.gretelController.securityContext" . }}
+          securityContext:
+            {{- . | nindent 12 }}
+          {{- end }}
           {{- with .Values.gretelController.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
