@@ -2,6 +2,6 @@ apiVersion: v2
 name: gretel-data-plane
 description: A chart for running on premise Gretel workflows
 type: application
-version: 0.0.4
-appVersion: "0.0.4"
+version: 0.0.5
+appVersion: "0.0.5"
 icon: "https://avatars.githubusercontent.com/u/59622948?s=200&v=4"

@@ -14,7 +14,7 @@ spec:
   source:
     chart: gretel-data-plane
     repoURL: https://gretel-blueprints-pub.s3.us-west-2.amazonaws.com/helm-charts/stable
-    targetRevision: 0.0.4
+    targetRevision: 0.0.5
     helm:
       releaseName: gretel-data-plane
       values: |
