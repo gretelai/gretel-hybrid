@@ -300,3 +300,9 @@ argoConfig:
     completed: 10
     failed: 50
     errored: 50
+
+## Configuration for Argo resources unrelated to the
+## controller deployment or the workflow engine configmap.
+argoExtraConfig:
+  ## Controls whether CRDs are deployed. Set to false for clusters already running ArgoCD.
+  deployCRDs: true
