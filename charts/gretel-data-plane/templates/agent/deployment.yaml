@@ -78,7 +78,6 @@ spec:
                   name: {{ . | quote }}
                   key: GRETEL_API_KEY
             {{- end }}
-            {{- if .Values._cluster_checkin }}
             - name: GRETEL_CLUSTER_SECRET_NAME
               value: "{{ include "gretel-gcc.namePrefix" . }}cluster-secret"
             - name: GRETEL_CLUSTER_ID
@@ -87,7 +86,6 @@ spec:
                   name: "{{ include "gretel-gcc.namePrefix" . }}cluster-secret"
                   key: GRETEL_CLUSTER_ID
                   optional: false  # Delay startup until the secret exists
-            {{- end }}
             - name: GRETEL_ENDPOINT
               value: "{{ .Values.gretelConfig.apiEndpoint }}"
           envFrom:
