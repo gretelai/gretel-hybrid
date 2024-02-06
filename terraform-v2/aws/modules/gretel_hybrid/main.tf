@@ -153,7 +153,8 @@ resource "aws_iam_policy" "gretel_workflow_worker_iam_policy" {
 }
 
 module "gretel_workflow_worker_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
 
   role_name = var.gretel_workflow_worker_iam_role_name
 
@@ -184,7 +185,8 @@ resource "aws_iam_policy" "gretel_model_worker_iam_policy" {
 }
 
 module "gretel_model_worker_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
 
   role_name = var.gretel_model_worker_iam_role_name
 

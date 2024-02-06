@@ -12,7 +12,8 @@ locals {
 data "aws_region" "current" {}
 
 module "cluster_autoscaler_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
 
   role_name                        = local.cluster_autoscaler_iam_role_name
   attach_cluster_autoscaler_policy = true

@@ -57,7 +57,8 @@ resource "aws_iam_policy" "gretel_hybrid_agent_iam_policy" {
 }
 
 module "gretel_hybrid_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
 
   role_name = var.gretel_agent_iam_role_name
 
