@@ -22,6 +22,7 @@ data:
       registry: "{{ required "gretelWorkers.images.registry must be set" .Values.gretelWorkers.images.registry }}"
       {{- end }}
       tag: "{{ .Values.gretelWorkers.images.tag }}"
+      usesDockerhubImageFormat: {{ include "gretel-gcc.gretelWorkers.usesDockerhubImageFormat" . }}
     workers:
       {{- with include "gretel-gcc.gretelWorkers.podLabels" . }}
       podLabels:

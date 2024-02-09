@@ -140,10 +140,12 @@ gretelAgent:
 ## @descripton Configure the workers launched by the Gretel Controller.
 ## @param gretelWorkers.images.registry From which to look up action image repositories.
 ## @param gretelWorkers.images.tag The tag to use for all action images.
+## @param gretelWorkers.images.usesDockerhubImageFormat Indicates that images are going through a cache registry
 gretelWorkers:
   images:
     registry: "" # Automatically determine, but override in the case of a pull through repository
     tag: "" # Automatically determine
+    usesDockerhubImageFormat: null # Set to true if images aren't from Gretel's docker registry
 
   ## Environment variables for all Gretel workers.
   env: {}
