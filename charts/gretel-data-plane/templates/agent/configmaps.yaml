@@ -22,6 +22,8 @@ metadata:
 data:
   GRETEL_WORKER_NAMESPACE: "{{ .Release.Namespace }}"
   GRETEL_WORKER_RESOURCES: {{ .Values.gretelWorkers.model.resources | toJson | quote }}
+  GRETEL_MODEL_WORKER_CPU_RESOURCES: {{ .Values.gretelWorkers.model.cpu.resources | toJson | quote }}
+  GRETEL_MODEL_WORKER_GPU_RESOURCES: {{ .Values.gretelWorkers.model.gpu.resources | toJson | quote }}
   GRETEL_WORKER_SA: "{{ include "gretel-gcc.gretelWorkers.model.serviceAccount.name" . }}"
   GRETEL_PULL_SECRET: "{{ include "gretel-gcc.gretelWorkers.imagePullSecret.name" . }}"
   GRETEL_PULL_SECRETS: {{ include "gretel-gcc.gretelWorkers.imagePullSecrets" . | fromYamlArray | toJson | quote }}

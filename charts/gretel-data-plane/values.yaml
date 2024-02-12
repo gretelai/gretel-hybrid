@@ -229,6 +229,9 @@ gretelWorkers:
       ## Security context to be passed to the CPU-based model worker pods. See
       ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
       securityContext: {}
+      ## Resource specification for CPU model workers. Overrides gretelWorkers.model.resources
+      ## See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+      resources: {}
     ## Configuration for worker pods executing GPU-based models
     gpu:
       ## Node selector to apply to GPU-based model workers. See
@@ -243,6 +246,9 @@ gretelWorkers:
       ## Security context to be passed to the GPU-based model worker pods. See
       ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
       securityContext: {}
+      ## Resource specification for GPU model workers. Overrides gretelWorkers.model.resources
+      ## See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+      resources: {}
 
 ## Argo Controller configuration
 argoController:
