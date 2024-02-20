@@ -51,6 +51,13 @@ resource "google_service_account_iam_binding" "gretel_model_worker_gcp_service_a
   ]
 }
 
+# Azure Key Vault keyrings aren't able to be destroyed, so we add a random suffix to prevent collision on redeploy
+resource "random_string" "keyring_random_suffix" {
+  length = 8
+  # No special chars (lowercase, uppercase, numbers will all be used)
+  special = false
+}
+
 module "gretel_hybrid_connector_encryption_key" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 2.2.3"
@@ -58,7 +65,7 @@ module "gretel_hybrid_connector_encryption_key" {
   project_id         = var.project_id
   location           = var.location
   prevent_destroy    = var.gretel_credentials_encryption_key_prevent_destroy
-  keyring            = var.gretel_credentials_encryption_keyring_name
+  keyring            = "${var.gretel_credentials_encryption_keyring_name}-${random_string.keyring_random_suffix.result}"
   keys               = [var.gretel_credentials_encryption_key_name]
   set_encrypters_for = [var.gretel_credentials_encryption_key_name]
   set_decrypters_for = [var.gretel_credentials_encryption_key_name]

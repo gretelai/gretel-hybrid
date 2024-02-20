@@ -40,7 +40,7 @@ variable "gretel_credentials_encryption_keyring_name" {
   type        = string
   description = "Name for the GCP KMS keyring that will be created."
   nullable    = false
-  default     = "gretel-hybrid-encryption-keyring"
+  default     = "gretel-hybrid"
 }
 
 variable "gretel_credentials_encryption_key_name" {

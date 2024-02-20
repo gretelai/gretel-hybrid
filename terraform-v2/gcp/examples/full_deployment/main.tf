@@ -15,6 +15,17 @@ provider "helm" {
   }
 }
 
+# Uncomment the google and google-beta providers to deploy this module directly (if you are not calling it from a parent module)
+# provider "google" {
+#   project = "your-project-here"
+#   region  = "us-central1"
+# }
+
+# provider "google-beta" {
+#   project = "your-project-here"
+#   region  = "us-central1"
+# }
+
 locals {
   cpu_model_worker_node_label = {
     key   = "gretel-worker"
@@ -137,7 +148,7 @@ module "gretel_hybrid" {
 
   # This allows deploying multiple instances into the same GCP project, as long
   # as their deployment names are different.
-  gretel_credentials_encryption_keyring_name = "${var.deployment_name}-keyring"
+  gretel_credentials_encryption_keyring_name = var.deployment_name # Random suffix will be added to the keyring
   gretel_credentials_encryption_key_name     = "credentials-encryption-key"
   gretel_workflow_worker_gcp_service_account = "${var.deployment_name}-workflow-worker"
   gretel_model_worker_gcp_service_account    = "${var.deployment_name}-model-worker"

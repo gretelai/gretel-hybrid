@@ -9,7 +9,7 @@ deployment_name = "gretel-hybrid"
 location        = "us-central1"
 node_locations  = ["us-central1-a", "us-central1-b", "us-central1-c"]
 bucket_location = "US"
-gke_version     = "1.27.3-gke.100"
+gke_version     = "1.27.9-gke.1092000"
 
 # GCS bucket names need to be globally unique. Change these. These buckets will be created for you.
 gretel_source_bucket_name = "gretel-hybrid-source"

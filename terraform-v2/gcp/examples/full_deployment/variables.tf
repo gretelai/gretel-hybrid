@@ -32,7 +32,7 @@ variable "node_locations" {
 variable "gke_version" {
   type        = string
   nullable    = false
-  default     = "1.27.3-gke.100"
+  default     = "1.27.9-gke.1092000"
   description = "Kubernetes version for the GKE cluster. Available GKE versions are documented here: https://cloud.google.com/kubernetes-engine/docs/release-notes"
 
   validation {
