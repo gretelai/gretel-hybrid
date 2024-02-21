@@ -1,5 +1,9 @@
 # Gretel Agents Chart
 
+# Deprecation Notice
+
+The `gretel-agent` helm chart has been **deprecated**. Please use the [new gretel-data-plane helm chart located here](../gretel-data-plane/) to deploy Gretel Hybrid.
+
 ## Running helm tests
 
 Once installed, run `helm test gretel-agent` to test running an amplify model against the project/ bucket you've chosen.
