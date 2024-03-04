@@ -52,6 +52,10 @@ data:
       repository:
         {{- . | nindent 8 }}
     {{- end }}
+    cluster:
+      {{- with .Values.clusterConfig.clusterName }}
+      clusterName: "{{ . }}"
+      {{- end }}
     {{- if .Values.gretelAgent._enabled }}
     runnerMode: RUNNER_MODE_HYBRID
     {{- else }}

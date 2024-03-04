@@ -314,3 +314,9 @@ argoConfig:
 argoExtraConfig:
   ## Controls whether CRDs are deployed. Set to false for clusters already running ArgoCD.
   deployCRDs: true
+
+## Any custom configuration used to identify the deployment
+clusterConfig:
+  ## The name that identifies this cluster environment. The default is to generate a name
+  ## that takes the deployment user/domain, region and cloud provider into account
+  clusterName: ""
