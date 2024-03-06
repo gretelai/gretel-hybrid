@@ -173,6 +173,7 @@ module "gretel_hybrid" {
   gretel_key_vault_name     = var.gretel_key_vault_name
   gretel_key_vault_key_name = var.gretel_key_vault_key_name
 
-  azure_tags        = local.azure_tags
-  extra_helm_values = var.extra_helm_values
+  azure_tags                     = local.azure_tags
+  extra_helm_values              = var.extra_helm_values
+  keyvault_user_access_object_id = var.keyvault_user_access_object_id
 }

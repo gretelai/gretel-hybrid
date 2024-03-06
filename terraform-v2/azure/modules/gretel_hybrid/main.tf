@@ -136,7 +136,7 @@ resource "azurerm_user_assigned_identity" "gretel_model_worker" {
 resource "azurerm_key_vault_access_policy" "current_user_access" {
   key_vault_id = azurerm_key_vault.gretel_key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = var.keyvault_user_access_object_id == null ? data.azurerm_client_config.current.object_id : var.keyvault_user_access_object_id
 
   key_permissions = ["Encrypt", "Decrypt", "Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore", "Purge", "GetRotationPolicy", "SetRotationPolicy"]
 }

@@ -83,3 +83,9 @@ variable "extra_helm_values" {
   type        = any
   default     = {}
 }
+
+variable "keyvault_user_access_object_id" {
+  description = "An access user to give key vault permission instead of the current user"
+  type        = string
+  default     = null
+}
