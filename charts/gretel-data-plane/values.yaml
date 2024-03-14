@@ -256,7 +256,7 @@ argoController:
     ## The repository of the image to use.
     repository: "quay.io/argoproj/workflow-controller"
     ## The tag of the image to use.
-    tag: "v3.5.2"
+    tag: "v3.5.5"
     ## The pull policy to use when pulling the image.
     pullPolicy: IfNotPresent
   serviceAccount:
