@@ -35,14 +35,14 @@ variable "cluster_autoscaler_chart_version" {
   type        = string
   nullable    = false
   description = "The helm chart version for cluster autoscaler. See: https://artifacthub.io/packages/helm/cluster-autoscaler/cluster-autoscaler"
-  default     = "9.29.1" # Released 2023/06/13
+  default     = "9.35.0"
 }
 
 variable "cluster_autoscaler_version" {
   type        = string
   nullable    = false
   description = "The version of cluster autoscaler to deploy. See: https://github.com/kubernetes/autoscaler/releases"
-  default     = "v1.27.3" # Released 2023-07-27
+  default     = "v1.29.0"
 }
 
 variable "aws_tags" {
