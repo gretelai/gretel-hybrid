@@ -47,4 +47,5 @@ data:
   GRETEL_ARTIFACT_ENDPOINT: "{{ required "gretelConfig.artifactEndpoint must be set!" .Values.gretelConfig.artifactEndpoint }}"
   RUNNER_MODES: hybrid
   GRETEL_RUNNER_MODE: hybrid
+  GRETEL_DISABLE_JOB_CLEANUP: "{{ .Values.gretelWorkers.model.debugDisableJobCleanup }}"
 {{- end }}

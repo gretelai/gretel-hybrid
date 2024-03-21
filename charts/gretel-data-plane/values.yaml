@@ -91,7 +91,6 @@ gretelController:
 
 ## @section Gretel Agent parameters
 ## @descripton Provide configuration for the model agent that will connect to the Gretel Cloud.
-## @param gretelAgent.maxWorkers Number of workers to spawn concurrently from the agent
 gretelAgent:
   image:
     ## The repository of the image to use.
@@ -197,6 +196,12 @@ gretelWorkers:
     ## your account are lower than this value, service limits take precedence. Leave at 0
     ## to let service limits define maximum concurrent model worker count.
     maxConcurrent: 0
+
+    ## Controls whether or not the agent will clean up model jobs once they are marked
+    ## completed/ended. Helps enable debug why Model pods might be failing, but
+    ## should really only be used for debugging
+    ## Defaults to false
+    debugDisableJobCleanup: false
 
     serviceAccount:
       ## The name of the service account to use for model workers. Defaults to `model-worker`
