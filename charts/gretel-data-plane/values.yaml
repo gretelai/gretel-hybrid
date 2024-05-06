@@ -41,6 +41,20 @@ gretelConfig:
   ## trust roots when set.
   caOverride: null
 
+  ## Asymmetric encryption key that should be used for decrypting asymmetrically encrypted
+  ## credentials.
+  asymmetricEncryption:
+    ## An identifier of the key to be used. This is cloud-provider specific; valid ID schemes are:
+    ## - aws-kms:<arn> for an AWS KMS key.
+    ## - gcp-kms:<resource name> for a GCP KMS key.
+    ## - azure-keyvault:<vault-uri>/<key-name>[/<key-version>] for an Azure Keyvault key.
+    keyId: null
+    ## The asymmetric encryption algorithm to use. If asymmetric encryption is used, the only supported
+    ## algorithm is currently RSA4096_OAEP_SHA256.
+    algorithm: null
+    ## The PEM-encoded public key. This should be a PEM block of type "RSA PUBLIC KEY".
+    publicKeyPem: null
+
 ## Gretel Controller configuration
 gretelController:
   image:

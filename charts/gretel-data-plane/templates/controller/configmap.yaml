@@ -52,6 +52,10 @@ data:
       repository:
         {{- . | nindent 8 }}
     {{- end }}
+    {{- with .Values.gretelConfig.asymmetricEncryption }}
+    asymmetricEncryption:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
     cluster:
       {{- with .Values.clusterConfig.clusterName }}
       clusterName: "{{ . }}"
