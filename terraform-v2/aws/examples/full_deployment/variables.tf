@@ -95,3 +95,9 @@ variable "extra_helm_values" {
   type        = any
   default     = {}
 }
+
+variable "_enable_asymmetric_encryption" {
+  description = "Internal only, do not modify"
+  type        = bool
+  default     = false
+}

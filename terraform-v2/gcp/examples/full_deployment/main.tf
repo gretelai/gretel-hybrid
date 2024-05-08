@@ -154,4 +154,6 @@ module "gretel_hybrid" {
   gretel_model_worker_gcp_service_account    = "${var.deployment_name}-model-worker"
 
   extra_helm_values = var.extra_helm_values
+
+  _enable_asymmetric_encryption = var._enable_asymmetric_encryption
 }

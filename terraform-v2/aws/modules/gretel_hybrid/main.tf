@@ -91,6 +91,19 @@ resource "aws_kms_alias" "credentials_encryption_key_alias" {
   target_key_id = aws_kms_key.credentials_encryption_key.key_id
 }
 
+resource "aws_kms_key" "asymmetric_credentials_encryption_key" {
+  key_usage                = "ENCRYPT_DECRYPT"
+  description              = "KMS key for asymmetric encryption of connection credentials"
+  customer_master_key_spec = "RSA_4096"
+  policy                   = data.aws_iam_policy_document.credentials_encryption_key_policy.json
+  count                    = var._enable_asymmetric_encryption ? 1 : 0
+}
+
+data "aws_kms_public_key" "asymmetric_credentials_encryption_public_key" {
+  key_id = aws_kms_key.asymmetric_credentials_encryption_key[0].key_id
+  count  = var._enable_asymmetric_encryption ? 1 : 0
+}
+
 data "aws_iam_policy_document" "read_from_source_bucket" {
   statement {
     actions = [
@@ -132,9 +145,10 @@ data "aws_iam_policy_document" "decrypt_credentials" {
       "kms:Decrypt",
     ]
     effect = "Allow"
-    resources = [
-      aws_kms_key.credentials_encryption_key.arn,
-    ]
+    resources = concat(
+      [aws_kms_key.credentials_encryption_key.arn],
+      [for k in aws_kms_key.asymmetric_credentials_encryption_key : k.arn],
+    )
   }
 }
 
@@ -227,6 +241,11 @@ resource "helm_release" "gretel_hybrid_agent" {
         artifactEndpoint = "s3://${aws_s3_bucket.gretel_hybrid_sink_bucket.id}/"
         artifactRegion   = aws_s3_bucket.gretel_hybrid_sink_bucket.region
         projects         = var.gretel_hybrid_projects
+        asymmetricEncryption = var._enable_asymmetric_encryption ? {
+          keyId        = "aws-kms:${aws_kms_key.asymmetric_credentials_encryption_key[0].arn}"
+          algorithm    = "RSA_4096_OAEP_SHA256"
+          publicKeyPem = data.aws_kms_public_key.asymmetric_credentials_encryption_public_key[0].public_key_pem
+        } : {}
       }
       gretelWorkers = {
         images = {

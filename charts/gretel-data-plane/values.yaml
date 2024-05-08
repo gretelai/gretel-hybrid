@@ -50,7 +50,7 @@ gretelConfig:
     ## - azure-keyvault:<vault-uri>/<key-name>[/<key-version>] for an Azure Keyvault key.
     keyId: null
     ## The asymmetric encryption algorithm to use. If asymmetric encryption is used, the only supported
-    ## algorithm is currently RSA4096_OAEP_SHA256.
+    ## algorithm is currently RSA_4096_OAEP_SHA256.
     algorithm: null
     ## The PEM-encoded public key. This should be a PEM block of type "RSA PUBLIC KEY".
     publicKeyPem: null

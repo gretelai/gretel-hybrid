@@ -21,6 +21,8 @@ locals {
       effect   = toleration.effect
     }
   ]
+
+  gretel_credentials_encryption_asymmetric_key_name = "${var.gretel_credentials_encryption_key_name}-asymmetric"
 }
 
 module "gretel_workflow_worker_gcp_service_account" {
@@ -78,6 +80,39 @@ module "gretel_hybrid_connector_encryption_key" {
   ]
 }
 
+module "gretel_hybrid_connector_asymmetric_encryption_key" {
+  source  = "terraform-google-modules/kms/google"
+  version = "~> 2.2.3"
+
+  project_id          = var.project_id
+  location            = var.location
+  prevent_destroy     = var.gretel_credentials_encryption_key_prevent_destroy
+  key_rotation_period = "" # rotation is not supported for asymmetric keys
+  keyring             = "${var.gretel_credentials_encryption_keyring_name}-asymmetric-${random_string.keyring_random_suffix.result}"
+  keys                = ["${local.gretel_credentials_encryption_asymmetric_key_name}"]
+  set_encrypters_for  = ["${local.gretel_credentials_encryption_asymmetric_key_name}"]
+  set_decrypters_for  = ["${local.gretel_credentials_encryption_asymmetric_key_name}"]
+
+  purpose       = "ASYMMETRIC_DECRYPT"
+  key_algorithm = "RSA_DECRYPT_OAEP_4096_SHA256"
+
+  # Encrypters is a list(string) where the string is a CSV value.
+  # This is due to the kms module allowing multiple keys to be created.
+  # See: https://github.com/terraform-google-modules/terraform-google-kms/blob/fc40f4ef4cf19c13206a72823f574953f36f3c85/main.tf#L83-L88
+  encrypters = [join(",", var.gretel_credentials_encryption_key_users)]
+  decrypters = [
+    "serviceAccount:${module.gretel_workflow_worker_gcp_service_account.email}",
+  ]
+
+  count = var._enable_asymmetric_encryption ? 1 : 0
+}
+
+data "google_kms_crypto_key_version" "asymmetric_encryption_key" {
+  count = var._enable_asymmetric_encryption ? 1 : 0
+
+  crypto_key = module.gretel_hybrid_connector_asymmetric_encryption_key[0].keys["${var.gretel_credentials_encryption_key_name}-asymmetric"]
+}
+
 module "gretel_hybrid_source_bucket" {
   source        = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/gcs?ref=v24.0.0"
   project_id    = var.project_id
@@ -129,6 +164,12 @@ resource "helm_release" "gretel_hybrid_agent" {
       apiKey           = var.gretel_api_key
       projects         = var.gretel_hybrid_projects
       artifactEndpoint = module.gretel_hybrid_sink_bucket.url
+
+      asymmetricEncryption = var._enable_asymmetric_encryption ? {
+        keyId        = "gcp-kms:${data.google_kms_crypto_key_version.asymmetric_encryption_key[0].name}"
+        algorithm    = "RSA_4096_OAEP_SHA256"
+        publicKeyPem = data.google_kms_crypto_key_version.asymmetric_encryption_key[0].public_key[0].pem
+      } : {}
     }
 
     gretelWorkers = {

@@ -193,3 +193,9 @@ variable "skip_kubernetes_resources" {
   type        = bool
   default     = false
 }
+
+variable "_enable_asymmetric_encryption" {
+  description = "Internal only"
+  type        = bool
+  default     = false
+}

@@ -199,3 +199,9 @@ variable "keyvault_user_access_object_id" {
   type        = string
   default     = null
 }
+
+variable "_enable_asymmetric_encryption" {
+  description = "Internal only"
+  type        = bool
+  default     = false
+}

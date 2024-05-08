@@ -176,4 +176,6 @@ module "gretel_hybrid" {
   azure_tags                     = local.azure_tags
   extra_helm_values              = var.extra_helm_values
   keyvault_user_access_object_id = var.keyvault_user_access_object_id
+
+  _enable_asymmetric_encryption = var._enable_asymmetric_encryption
 }
