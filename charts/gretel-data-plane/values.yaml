@@ -173,6 +173,9 @@ gretelWorkers:
 
   ## Configuration for worker pods executing workflow actions
   workflow:
+    ## Setting to determine whether or not we upload workflow logs to Gretel cloud
+    ## so they can be visible in the Console/polled via the SDK
+    enableCloudLogs: true
     serviceAccount:
       ## The name of the service account to use for workflow workers. Defaults to `workflow-worker`
       ## when not specified.
@@ -216,6 +219,10 @@ gretelWorkers:
     ## should really only be used for debugging
     ## Defaults to false
     debugDisableJobCleanup: false
+
+    ## Setting to determine whether or not we upload model logs to Gretel cloud
+    ## so they can be visible in the Console/polled via the SDK
+    enableCloudLogs: true
 
     serviceAccount:
       ## The name of the service account to use for model workers. Defaults to `model-worker`

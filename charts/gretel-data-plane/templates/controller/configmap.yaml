@@ -45,9 +45,9 @@ data:
       securityContext:
         {{- . | nindent 8 }}
       {{- end }}
-    {{- with include "gretel-gcc.argoArtifactRepository" . }}
     logs:
-      enableCloudLogs: true
+      enableCloudLogs: {{ .Values.gretelWorkers.workflow.enableCloudLogs }}
+    {{- with include "gretel-gcc.argoArtifactRepository" . }}
     argo:
       repository:
         {{- . | nindent 8 }}

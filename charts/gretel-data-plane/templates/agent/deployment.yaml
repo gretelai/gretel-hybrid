@@ -69,6 +69,9 @@ spec:
             {{- end }}
             "--same-org-only",
             "--auto-accept-project-invites",
+            {{- if not .Values.gretelWorkers.model.enableCloudLogs }}
+            "--disable-cloud-logging", "true",
+            {{- end }}
           ]
           env:
             {{- with (include "gretel-gcc.gretelConfig.apiKeySecretName" .) }}
