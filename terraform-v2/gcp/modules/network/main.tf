@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "<5.29.0" # https://github.com/hashicorp/terraform-provider-google/issues/18115
+    }
+  }
+}
+
 locals {
   ip_range_name_pods     = "pods"
   ip_range_name_services = "services"
