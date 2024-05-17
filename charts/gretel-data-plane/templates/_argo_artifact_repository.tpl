@@ -28,8 +28,9 @@ gcs:
   bucket: {{ $bucket | quote }}
 {{- else if eq $scheme "azure" -}}
 {{- $storageAccountName := get .Values.gretelWorkers.env "AZURE_STORAGE_ACCOUNT_NAME" | required "An Azure storage account name must be set via the AZURE_STORAGE_ACCOUNT_NAME worker environment variable (or configure argoConfig.artifactRepository directly with the correct settings)" }}
+{{- $storageDomain := get .Values.gretelWorkers.env "AZURE_STORAGE_DOMAIN" | default "windows.net" }}
 azure:
-  endpoint: "https://{{ $storageAccountName }}.blob.core.windows.net/"
+  endpoint: "https://{{ $storageAccountName }}.blob.core.{{ $storageDomain }}/"
   container: {{ $bucket | quote }}
   useSDKCreds: true
 {{- else }}
