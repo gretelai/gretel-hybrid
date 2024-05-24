@@ -48,6 +48,8 @@ data:
     logs:
       enableCloudLogs: {{ .Values.gretelWorkers.workflow.enableCloudLogs }}
     {{- with include "gretel-gcc.argoArtifactRepository" . }}
+      repository:
+        {{- . | nindent 8 }}
     argo:
       repository:
         {{- . | nindent 8 }}
