@@ -261,8 +261,9 @@ resource "helm_release" "gretel_hybrid_agent" {
           }
           resources = {
             requests = {
-              cpu    = var.gretel_model_worker_pod_cpu_count
-              memory = "${var.gretel_model_worker_pod_memory_gb}Gi"
+              cpu               = var.gretel_model_worker_pod_cpu_count
+              memory            = "${var.gretel_model_worker_pod_memory_gb}Gi"
+              ephemeral-storage = "${var.gretel_model_worker_pod_ephemeral_storage_gb}Gi"
             }
             limits = {
               memory = "${var.gretel_model_worker_pod_memory_gb}Gi"

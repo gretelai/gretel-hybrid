@@ -136,6 +136,12 @@ variable "gretel_model_worker_pod_cpu_count" {
   default     = "1"
 }
 
+variable "gretel_model_worker_pod_ephemeral_storage_gb" {
+  type        = string
+  description = "Integer value specifying ephemeral storage for pods in Gi."
+  default     = "25"
+}
+
 variable "gretel_max_workers" {
   type        = string
   description = "Number of parallel jobs that can be spawned concurrently from the agent. This cannot exceed the number of licensed workers purchased from gretel."
