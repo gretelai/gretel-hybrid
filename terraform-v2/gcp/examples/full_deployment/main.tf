@@ -155,5 +155,5 @@ module "gretel_hybrid" {
 
   extra_helm_values = var.extra_helm_values
 
-  _enable_asymmetric_encryption = var._enable_asymmetric_encryption
+  enable_asymmetric_encryption = var.enable_asymmetric_encryption
 }

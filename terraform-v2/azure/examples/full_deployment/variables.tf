@@ -90,8 +90,8 @@ variable "keyvault_user_access_object_id" {
   default     = null
 }
 
-variable "_enable_asymmetric_encryption" {
-  description = "Internal only"
+variable "enable_asymmetric_encryption" {
+  description = "Controls if asymmetric encryption should be enabled"
   type        = bool
-  default     = false
+  default     = true
 }

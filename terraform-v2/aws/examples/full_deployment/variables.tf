@@ -96,8 +96,8 @@ variable "extra_helm_values" {
   default     = {}
 }
 
-variable "_enable_asymmetric_encryption" {
-  description = "Internal only, do not modify"
+variable "enable_asymmetric_encryption" {
+  description = "Controls if asymmetric encryption should be enabled"
   type        = bool
-  default     = false
+  default     = true
 }

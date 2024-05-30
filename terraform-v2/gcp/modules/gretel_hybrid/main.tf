@@ -104,11 +104,11 @@ module "gretel_hybrid_connector_asymmetric_encryption_key" {
     "serviceAccount:${module.gretel_workflow_worker_gcp_service_account.email}",
   ]
 
-  count = var._enable_asymmetric_encryption ? 1 : 0
+  count = var.enable_asymmetric_encryption ? 1 : 0
 }
 
 data "google_kms_crypto_key_version" "asymmetric_encryption_key" {
-  count = var._enable_asymmetric_encryption ? 1 : 0
+  count = var.enable_asymmetric_encryption ? 1 : 0
 
   crypto_key = module.gretel_hybrid_connector_asymmetric_encryption_key[0].keys["${var.gretel_credentials_encryption_key_name}-asymmetric"]
 }
@@ -165,7 +165,7 @@ resource "helm_release" "gretel_hybrid_agent" {
       projects         = var.gretel_hybrid_projects
       artifactEndpoint = module.gretel_hybrid_sink_bucket.url
 
-      asymmetricEncryption = var._enable_asymmetric_encryption ? {
+      asymmetricEncryption = var.enable_asymmetric_encryption ? {
         keyId        = "gcp-kms:${data.google_kms_crypto_key_version.asymmetric_encryption_key[0].name}"
         algorithm    = "RSA_4096_OAEP_SHA256"
         publicKeyPem = data.google_kms_crypto_key_version.asymmetric_encryption_key[0].public_key[0].pem

@@ -194,7 +194,7 @@ resource "helm_release" "gretel_hybrid_agent" {
       apiKey           = var.gretel_api_key
       projects         = var.gretel_hybrid_projects
       artifactEndpoint = "azure://${azurerm_storage_container.sink.name}/"
-      asymmetricEncryption = var._enable_asymmetric_encryption ? {
+      asymmetricEncryption = var.enable_asymmetric_encryption ? {
         keyId        = "azure-keyvault:${azurerm_key_vault_key.gretel_key.id}"
         algorithm    = "RSA_4096_OAEP_SHA256"
         publicKeyPem = azurerm_key_vault_key.gretel_key.public_key_pem
