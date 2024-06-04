@@ -48,4 +48,5 @@ data:
   RUNNER_MODES: hybrid
   GRETEL_RUNNER_MODE: hybrid
   GRETEL_DISABLE_JOB_CLEANUP: "{{ .Values.gretelWorkers.model.debugDisableJobCleanup }}"
+  JOB_BACKOFF_LIMIT: "{{ .Values.gretelWorkers.model.jobBackoffLimit }}"
 {{- end }}

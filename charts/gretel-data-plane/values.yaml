@@ -224,6 +224,10 @@ gretelWorkers:
     ## so they can be visible in the Console/polled via the SDK
     enableCloudLogs: true
 
+    ## Backoff limit for jobs. By default this is zero, but if there are eviction issues
+    ## with model jobs, this can be increased to allow for retries.
+    jobBackoffLimit: 0
+
     serviceAccount:
       ## The name of the service account to use for model workers. Defaults to `model-worker`
       ## when not specified.
