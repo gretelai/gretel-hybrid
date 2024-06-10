@@ -18,8 +18,12 @@ locals {
     for taint in var.node_taints :
     "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${taint.effect}"
   }
+  cluster_autoscaler_resource_tags = {
+    for resource in var.node_resource_hints :
+    "k8s.io/cluster-autoscaler/node-template/resources/${resource.key}" => "${resource.value}"
+  }
 
-  cluster_autoscaler_asg_tags = merge(local.cluster_autoscaler_label_tags, local.cluster_autoscaler_taint_tags)
+  cluster_autoscaler_asg_tags = merge(local.cluster_autoscaler_label_tags, local.cluster_autoscaler_taint_tags, local.cluster_autoscaler_resource_tags)
 
   k8s_tags = merge({
     "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"

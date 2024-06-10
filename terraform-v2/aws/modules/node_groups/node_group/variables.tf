@@ -39,6 +39,15 @@ variable "node_taints" {
   }))
 }
 
+variable "node_resource_hints" {
+  nullable = false
+  type = list(object({
+    key   = string
+    value = string
+  }))
+  default = []
+}
+
 variable "ami_base" {
   type = string
 }

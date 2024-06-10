@@ -117,6 +117,12 @@ module "node_groups" {
         effect = "NoSchedule"
       }
     ]
+    node_resource_hints = [
+      {
+        key   = "ephemeral-storage"
+        value = "100G"
+      }
+    ]
   }
   gpu_node_group_config = {
     name                 = "gretel-workers-gpu-models"
@@ -131,6 +137,12 @@ module "node_groups" {
         key    = local.gpu_model_worker_node_label.key
         value  = local.gpu_model_worker_node_label.value
         effect = "NoSchedule"
+      }
+    ]
+    node_resource_hints = [
+      {
+        key   = "ephemeral-storage"
+        value = "100G"
       }
     ]
   }

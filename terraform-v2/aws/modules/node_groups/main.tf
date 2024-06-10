@@ -19,6 +19,7 @@ module "cpu_node_group" {
   disk_size_gb         = var.cpu_node_group_config.disk_size_gb
   node_labels          = var.cpu_node_group_config.node_labels
   node_taints          = var.cpu_node_group_config.node_taints
+  node_resource_hints  = try(var.cpu_node_group_config.node_resource_hints, [])
 }
 
 module "gpu_node_group" {
@@ -42,4 +43,5 @@ module "gpu_node_group" {
   disk_size_gb         = var.gpu_node_group_config.disk_size_gb
   node_labels          = var.gpu_node_group_config.node_labels
   node_taints          = var.gpu_node_group_config.node_taints
+  node_resource_hints  = try(var.cpu_node_group_config.node_resource_hints, [])
 }

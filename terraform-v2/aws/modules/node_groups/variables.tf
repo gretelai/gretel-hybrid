@@ -17,6 +17,10 @@ variable "cpu_node_group_config" {
       value  = string
       effect = string
     }))
+    node_resource_hints = optional(list(object({
+      key   = string
+      value = string
+    })))
   })
 }
 
@@ -39,6 +43,10 @@ variable "gpu_node_group_config" {
       value  = string
       effect = string
     }))
+    node_resource_hints = optional(list(object({
+      key   = string
+      value = string
+    })))
   })
 }
 
