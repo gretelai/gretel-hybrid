@@ -205,6 +205,9 @@ gretelWorkers:
     ## Security context to apply workflow action workers. See
     ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     securityContext: {}
+    ## Pod Disruption budget that can be set on the workflow pods to prevent eviction. See
+    ## https://argo-workflows.readthedocs.io/en/stable/fields/#poddisruptionbudgetspec
+    podDisruptionBudget: {}
 
   ## Configuration for worker pods executing model actions
   model:
