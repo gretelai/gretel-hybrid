@@ -232,6 +232,7 @@ resource "helm_release" "gretel_hybrid_agent" {
   depends_on = [
     kubernetes_namespace.gretel_hybrid_namespace
   ]
+  max_history = 50
 
   values = [
     yamlencode({
