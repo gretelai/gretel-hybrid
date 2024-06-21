@@ -39,6 +39,7 @@ data:
   IMAGE_REGISTRY_OVERRIDE_HOST: "{{ trimSuffix "/" .Values.gretelWorkers.images.registry }}"
   IMAGE_REGISTRY_OVERRIDE_TAG: "{{ .Values.gretelWorkers.images.tag }}"
   USES_DOCKERHUB_IMAGE_FORMAT: "{{ include "gretel-gcc.gretelWorkers.usesDockerhubImageFormat" . }}"
+  USE_COMBINED_MODELS_IMAGE: "{{ .Values.gretelWorkers.model.images.useCombinedModelsImage }}"
   WORKER_POD_LABELS: {{ include "gretel-gcc.gretelWorkers.podLabels" . | fromYaml | toJson | quote }}
   WORKER_POD_ANNOTATIONS: {{ include "gretel-gcc.gretelWorkers.podAnnotations" . | fromYaml | toJson | quote }}
   {{- if .Values.gretelAgent.extraCaCert }}
