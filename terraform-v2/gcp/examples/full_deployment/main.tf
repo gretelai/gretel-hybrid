@@ -61,7 +61,7 @@ module "cluster" {
     machine_type         = "e2-standard-2"
     disk_size_gb         = 100
     min_autoscaling_size = 1
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
   }
   network_name           = module.network.network_name
   subnet_name            = module.network.subnet_name
@@ -81,7 +81,7 @@ module "node_groups" {
     machine_type         = "n2-standard-4"
     ip_range_name_pods   = module.network.ip_range_name_pods
     min_autoscaling_size = 0
-    max_autoscaling_size = 5
+    max_autoscaling_size = var.max_autoscaling_size
     disk_size_gb         = 200
     node_labels          = [local.cpu_model_worker_node_label]
     node_taints = [
@@ -100,7 +100,7 @@ module "node_groups" {
     gpu_count            = 1
     ip_range_name_pods   = module.network.ip_range_name_pods
     min_autoscaling_size = 0
-    max_autoscaling_size = 5
+    max_autoscaling_size = var.max_autoscaling_size
     disk_size_gb         = 200
     node_labels          = [local.gpu_model_worker_node_label]
     node_taints = [

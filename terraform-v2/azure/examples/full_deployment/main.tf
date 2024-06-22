@@ -83,7 +83,7 @@ module "cluster" {
     instance_type        = "Standard_B4ms"
     disk_size_gb         = 100
     min_autoscaling_size = 1
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
   }
 
   azure_tags = local.azure_tags
@@ -115,7 +115,7 @@ module "node_groups" {
     instance_type        = "Standard_D4as_v4"
     disk_size_gb         = 200
     min_autoscaling_size = 0
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
   }
   cpu_model_worker_node_group_labels = [{
     key   = local.cpu_model_worker_node_label.key
@@ -132,7 +132,7 @@ module "node_groups" {
     instance_type        = "Standard_NC4as_T4_v3"
     disk_size_gb         = 200
     min_autoscaling_size = 0
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
   }
   gpu_model_worker_node_group_labels = [{
     key   = local.gpu_model_worker_node_label.key

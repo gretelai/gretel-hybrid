@@ -83,7 +83,7 @@ module "cluster" {
     instance_types       = ["t3.large"]
     disk_size_gb         = 100
     min_autoscaling_size = 1
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
   }
 
   vpc_id              = module.network.vpc_id
@@ -107,7 +107,7 @@ module "node_groups" {
     instance_type        = "m5.xlarge"
     subnet_ids           = module.network.vpc_private_subnets
     min_autoscaling_size = 0
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
     disk_size_gb         = 200
     node_labels          = [local.cpu_model_worker_node_label]
     node_taints = [
@@ -129,7 +129,7 @@ module "node_groups" {
     instance_type        = "g5.xlarge"
     subnet_ids           = module.network.vpc_private_subnets
     min_autoscaling_size = 0
-    max_autoscaling_size = 3
+    max_autoscaling_size = var.max_autoscaling_size
     disk_size_gb         = 200
     node_labels          = [local.gpu_model_worker_node_label]
     node_taints = [

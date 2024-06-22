@@ -122,3 +122,9 @@ variable "enable_asymmetric_encryption" {
   type        = bool
   default     = true
 }
+
+variable "max_autoscaling_size" {
+  type        = number
+  description = "Max autoscaling size for ALL autoscaling groups"
+  default     = 5
+}
