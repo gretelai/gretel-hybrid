@@ -1,3 +1,0 @@
-# Gretel Hybrid Terraform (v1 DEPRECATED)
-
-The v1 Gretel Hybrid Terraform modules have been **deprecated**. Please use the [new Terraform modules provided here](../terraform-v2/) and [documented here](https://docs.gretel.ai/operate-and-manage-gretel/gretel-hybrid/deployment). If you need to reference the v1 Terraform modules they are [available in a tagged release](https://github.com/gretelai/gretel-hybrid/tree/v1.0.0).
