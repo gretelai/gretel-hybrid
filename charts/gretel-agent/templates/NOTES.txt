@@ -1,2 +1,0 @@
-This will run one agent pod as a worker, meaning it is not accessible via ingress
-
