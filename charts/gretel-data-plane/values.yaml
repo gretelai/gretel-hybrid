@@ -212,7 +212,7 @@ gretelWorkers:
   ## Configuration for worker pods executing model actions
   model:
     images:
-      useCombinedModelsImage: false # Use a single container image for all models rather than one per model type
+      useCombinedModelsImage: true # Use a single container image for all models rather than one per model type
 
     ## Maximum number of concurrent model workers. This should be set in accordance with the
     ## cluster autoscaler's maximum node pool sizes for model jobs. If the service limits for
