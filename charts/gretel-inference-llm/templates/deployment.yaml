@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gretel-inference-llm.llmName" . }}
+  labels:
+    {{- include "gretel-inference-llm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "gretel-inference-llm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gretel-inference-llm.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: "{{ .Values.gretelInitImage.name }}"
+          image: "{{ .Values.gretelInitImage.repository }}:{{ .Values.gretelInitImage.tag }}"
+          env:
+          - name: MODEL_BUCKET
+            value: "{{ .Values.gretelLLMConfig.modelBucket }}"
+          - name: MODEL_ID
+            value: "{{ .Values.gretelLLMConfig.modelId }}"
+          - name: GRETEL_ENDPOINT
+            value: "{{ .Values.gretelConfig.apiEndpoint }}"
+          - name: GRETEL_API_KEY
+            value: "{{ required "apiKey is a required field" .Values.gretelConfig.apiKey }}"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail;
+              curl --header "Authorization: $GRETEL_API_KEY" "$GRETEL_ENDPOINT/opt/inference_models/get_credentials" | tr -d '"' > /tmp/out.env;
+              source /tmp/out.env;
+              aws s3 cp --recursive s3://${MODEL_BUCKET}/${MODEL_ID} /models/${MODEL_ID};
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      containers:
+        - name: {{ include "gretel-inference-llm.llmName" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.gretelLLMImage.repository }}:{{ .Values.gretelLLMImage.tag }}"
+          imagePullPolicy: {{ .Values.gretelLLMImage.pullPolicy }}
+          env:
+          - name: PORT
+            value: "{{ .Values.service.port }}"
+          - name: MODEL_ID
+            value: "/models/{{ .Values.gretelLLMConfig.modelId }}"
+          - name: MAX_TOTAL_TOKENS
+            value: "{{ .Values.gretelLLMConfig.maxTotalTokens }}"
+          - name: MAX_INPUT_LENGTH
+            value: "{{ .Values.gretelLLMConfig.maxInputLength }}"
+          - name: MAX_CONCURRENT_REQUESTS
+            value: "{{ .Values.gretelLLMConfig.maxConcurrentRequests }}"
+          - name: TRUST_REMOTE_CODE
+            value: "{{ .Values.gretelLLMConfig.trustRemoteCode }}"
+          {{- with .Values.gretelLLMConfig.quantize }}
+          - name: "QUANTIZE"
+            value: "{{ . }}"
+          {{- end}}
+          {{- with .Values.gretelLLMConfig.ropeScaling }}
+          - name: "ROPE_SCALING"
+            value: "{{ . }}"
+          {{- end}}
+          {{- with .Values.gretelLLMConfig.ropeFactor }}
+          - name: "ROPE_FACTOR"
+            value: "{{ . }}"
+          {{- end}}
+          {{- with .Values.gretelLLMConfig.maxBatchPrefillTokens }}
+          - name: "MAX_BATCH_PREFILL_TOKENS"
+            value: "{{ . }}"
+          {{- end}}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

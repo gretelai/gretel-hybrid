@@ -1,0 +1,7 @@
+apiVersion: v2
+name: gretel-inference-llm
+description: A chart for running LLMs for inference
+type: application
+version: "1.0.1-SNAPSHOT"
+appVersion: "1.0.1-SNAPSHOT"
+icon: "https://avatars.githubusercontent.com/u/59622948?s=200&v=4"

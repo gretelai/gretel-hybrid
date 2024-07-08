@@ -1,0 +1,86 @@
+# Default values for gretel-inference-llm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+gretelConfig:
+  apiKey: "" # required
+  apiEndpoint: "https://api.gretel.cloud"
+
+gretelLLMConfig:
+  modelName: "mistral-7b"
+  modelId: "mistral-7b-02-b70aa86"
+  modelBucket: "cloud-api-inference-model-storage"
+  maxTotalTokens: 8192
+  maxInputLength: 4096
+  maxConcurrentRequests: 64
+  trustRemoteCode: false
+  maxBatchPrefillTokens: ""
+  quantize: ""
+  ropeFactor: ""
+  ropeScaling: ""
+
+gretelInitImage:
+  name: s3-download-inference-model
+  repository: amazon/aws-cli
+  tag: 2.10.0
+
+gretelLLMImage:
+  repository: ghcr.io/huggingface/text-generation-inference
+  tag: 2.0.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3000
+
+resources:
+  limits:
+    memory: 10Gi
+    nvidia.com/gpu: 1
+  requests:
+    memory: 10Gi
+    nvidia.com/gpu: 1
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+volumes:
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 1Gi
+  - name: models
+    emptyDir:
+      sizeLimit: 100Gi
+
+volumeMounts:
+  - mountPath: /dev/shm
+    name: shm
+  - mountPath: /models
+    name: models
+
+tolerations: {}
+affinity: {}
+nodeSelector: {}
+serviceAnnotations: {}
+podAnnotations: {}
+podLabels: {}
+
+imagePullSecrets: []
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
