@@ -129,7 +129,7 @@ module "node_groups" {
 
   # ----- Gretel GPU Workers -----
   gpu_model_worker_node_group_config = {
-    instance_type        = "Standard_NC4as_T4_v3"
+    instance_type        = var.gpu_instance_type
     disk_size_gb         = 200
     min_autoscaling_size = 0
     max_autoscaling_size = var.max_autoscaling_size

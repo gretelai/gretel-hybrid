@@ -101,3 +101,9 @@ variable "max_autoscaling_size" {
   description = "Max autoscaling size for ALL autoscaling groups"
   default     = 5
 }
+
+variable "gpu_instance_type" {
+  type        = string
+  description = "Instance type used for GPU nodes"
+  default     = "Standard_NC4as_T4_v3"
+}
