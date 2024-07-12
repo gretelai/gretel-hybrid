@@ -10,6 +10,12 @@ variable "gretel_chart" {
   description = "The helm chart for gretel hybrid."
   default     = "gretel-data-plane"
 }
+variable "gretel_chart_version" {
+  type        = string
+  nullable    = true
+  description = "The version of gretel hybrid."
+  default     = ""
+}
 
 variable "gretel_hybrid_namespace" {
   type        = string

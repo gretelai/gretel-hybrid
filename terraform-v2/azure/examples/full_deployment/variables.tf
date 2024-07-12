@@ -59,6 +59,13 @@ variable "gretel_chart" {
   default     = "gretel-data-plane"
 }
 
+variable "gretel_chart_version" {
+  type        = string
+  nullable    = true
+  description = "The version of gretel hybrid."
+  default     = ""
+}
+
 variable "gretel_api_endpoint" {
   type        = string
   nullable    = false

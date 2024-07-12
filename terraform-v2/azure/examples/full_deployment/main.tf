@@ -156,9 +156,10 @@ module "gretel_hybrid" {
   gretel_sink_storage_container_name   = local.gretel_sink_storage_container_name
   kubernetes_oidc_issuer_url           = module.cluster.kubernetes_oidc_issuer_url
 
-  gretel_helm_repo    = var.gretel_helm_repo
-  gretel_chart        = var.gretel_chart
-  gretel_api_endpoint = var.gretel_api_endpoint
+  gretel_helm_repo     = var.gretel_helm_repo
+  gretel_chart         = var.gretel_chart
+  gretel_api_endpoint  = var.gretel_api_endpoint
+  gretel_chart_version = var.gretel_chart_version
 
   gretel_api_key                    = local.gretel_api_key
   gretel_model_worker_pod_memory_gb = "10" # 16GB workers, leaving headroom for DaemonSets. Any higher and pods cannot be scheduled.
