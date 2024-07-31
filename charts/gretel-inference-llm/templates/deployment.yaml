@@ -1,3 +1,8 @@
+{{- if and .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef }}
+{{ fail "Both .gretelConfig.apiKey and .gretelConfig.apiKeySecretRef cannot be set. Only set one of these values." }}
+{{- else if (not (or .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef)) -}}
+{{ fail "One of .gretelConfig.apiKey or .gretelConfig.apiKeySecretRef must be set" }}
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,8 +42,13 @@ spec:
             value: "{{ .Values.gretelLLMConfig.modelId }}"
           - name: GRETEL_ENDPOINT
             value: "{{ .Values.gretelConfig.apiEndpoint }}"
+          {{- with (include "gretel-inference-llm.gretelConfig.apiKeySecretName" .) }}
           - name: GRETEL_API_KEY
-            value: "{{ required "apiKey is a required field" .Values.gretelConfig.apiKey }}"
+            valueFrom:
+              secretKeyRef:
+                name: {{ . | quote }}
+                key: GRETEL_API_KEY
+          {{- end }}
           command: ["/bin/sh", "-c"]
           args:
             - |

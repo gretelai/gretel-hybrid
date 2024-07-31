@@ -45,3 +45,11 @@ Selector labels
 app.kubernetes.io/name: {{ include "gretel-inference-llm.appName" . }}
 app.kubernetes.io/instance: {{ include "gretel-inference-llm.instanceName" . }}
 {{- end }}
+
+{{- define "gretel-inference-llm.gretelConfig.apiKeySecretName" }}
+{{- if .Values.gretelConfig.apiKey }}
+{{- include "gretel-inference-llm.appName" . }}-gretel-api-key
+{{- else }}
+{{- .Values.gretelConfig.apiKeySecretRef }}
+{{- end }}
+{{- end -}}
