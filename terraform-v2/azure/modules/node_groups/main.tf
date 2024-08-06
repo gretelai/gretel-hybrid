@@ -8,6 +8,8 @@ terraform {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "gpu_node_pool" {
+  # Since max_autoscaling_size set to 0 isn't supported by this TF resource, delete the resource if max_autoscaling_size is 0
+  count                 = var.gpu_model_worker_node_group_config.max_autoscaling_size > 0 ? 1 : 0
   name                  = "gretelgpu"
   kubernetes_cluster_id = var.kubernetes_cluster_id
   vm_size               = var.gpu_model_worker_node_group_config.instance_type

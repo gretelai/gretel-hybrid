@@ -105,9 +105,22 @@ variable "enable_asymmetric_encryption" {
 
 variable "max_autoscaling_size" {
   type        = number
-  description = "Max autoscaling size for ALL autoscaling groups"
+  description = "Max autoscaling size for the default worker autoscaling group"
   default     = 5
 }
+
+variable "max_autoscaling_size_cpu" {
+  type        = number
+  description = "Max autoscaling size for cpu model worker autoscaling group"
+  default     = 5
+}
+
+variable "max_autoscaling_size_gpu" {
+  type        = number
+  description = "Max autoscaling size for cpu model worker autoscaling group"
+  default     = 1
+}
+
 
 variable "gpu_instance_type" {
   type        = string

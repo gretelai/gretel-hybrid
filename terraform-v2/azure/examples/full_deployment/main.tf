@@ -115,7 +115,7 @@ module "node_groups" {
     instance_type        = "Standard_D4as_v4"
     disk_size_gb         = 200
     min_autoscaling_size = 0
-    max_autoscaling_size = var.max_autoscaling_size
+    max_autoscaling_size = var.max_autoscaling_size_cpu
   }
   cpu_model_worker_node_group_labels = [{
     key   = local.cpu_model_worker_node_label.key
@@ -132,7 +132,7 @@ module "node_groups" {
     instance_type        = var.gpu_instance_type
     disk_size_gb         = 200
     min_autoscaling_size = 0
-    max_autoscaling_size = var.max_autoscaling_size
+    max_autoscaling_size = var.max_autoscaling_size_gpu
   }
   gpu_model_worker_node_group_labels = [{
     key   = local.gpu_model_worker_node_label.key
