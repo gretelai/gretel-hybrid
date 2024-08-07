@@ -12,19 +12,6 @@ gretelConfig:
   apiKeySecretRef: ""
   apiEndpoint: "https://api.gretel.cloud"
 
-gretelLLMConfig:
-  modelName: "mistral-7b"
-  modelId: "mistral-7b-02-b70aa86"
-  modelBucket: "cloud-api-inference-model-storage-prod"
-  maxTotalTokens: 8192
-  maxInputLength: 4096
-  maxConcurrentRequests: 64
-  trustRemoteCode: false
-  maxBatchPrefillTokens: ""
-  quantize: ""
-  ropeFactor: ""
-  ropeScaling: ""
-
 gretelInitImage:
   name: s3-download-inference-model
   repository: amazon/aws-cli
@@ -34,6 +21,37 @@ gretelLLMImage:
   repository: ghcr.io/huggingface/text-generation-inference
   tag: 2.2.0
   pullPolicy: IfNotPresent
+
+gretelLLMConfig:
+  modelName: "mistral-7b"
+
+availableLLMConfigs:
+  mistral-7b:
+    modelName: "mistral-7b"
+    modelId: "mistralai/Mistral-7B-Instruct-v0.3"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 15 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: ""
+    ropeFactor: ""
+    ropeScaling: ""
+  mistral-nemo-2407:
+    modelName: "mistral-nemo-2407"
+    modelId: "casperhansen/mistral-nemo-instruct-2407-awq"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 25 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: "awq"
+    ropeFactor: ""
+    ropeScaling: ""
 
 service:
   type: ClusterIP
@@ -54,20 +72,8 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 10
 
-volumes:
-  - name: shm
-    emptyDir:
-      medium: Memory
-      sizeLimit: 1Gi
-  - name: models
-    emptyDir:
-      sizeLimit: 100Gi
-
-volumeMounts:
-  - mountPath: /dev/shm
-    name: shm
-  - mountPath: /models
-    name: models
+extraVolumes: {}
+extraVolumeMounts: {}
 
 tolerations: {}
 affinity: {}
@@ -78,13 +84,10 @@ podLabels: {}
 
 imagePullSecrets: []
 podSecurityContext: {}
-  # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  readOnlyRootFilesystem: true

@@ -1,3 +1,5 @@
+{{- $llmConfig := fromYaml (include "validateAndGetModelConfig" .) }}
+
 {{- if and .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef }}
 {{ fail "Both .gretelConfig.apiKey and .gretelConfig.apiKeySecretRef cannot be set. Only set one of these values." }}
 {{- else if (not (or .Values.gretelConfig.apiKey .Values.gretelConfig.apiKeySecretRef)) -}}
@@ -37,9 +39,9 @@ spec:
           image: "{{ .Values.gretelInitImage.repository }}:{{ .Values.gretelInitImage.tag }}"
           env:
           - name: MODEL_BUCKET
-            value: "{{ .Values.gretelLLMConfig.modelBucket }}"
+            value: "{{ $llmConfig.modelBucket }}"
           - name: MODEL_ID
-            value: "{{ .Values.gretelLLMConfig.modelId }}"
+            value: "{{ $llmConfig.modelId }}"
           - name: GRETEL_ENDPOINT
             value: "{{ .Values.gretelConfig.apiEndpoint }}"
           {{- with (include "gretel-inference-llm.gretelConfig.apiKeySecretName" .) }}
@@ -56,8 +58,10 @@ spec:
               curl --header "Authorization: $GRETEL_API_KEY" "$GRETEL_ENDPOINT/opt/inference_models/get_credentials" | tr -d '"' > /tmp/out.env;
               source /tmp/out.env;
               aws s3 cp --recursive s3://${MODEL_BUCKET}/${MODEL_ID} /models/${MODEL_ID};
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+            - mountPath: /models
+              name: models
+          {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       containers:
@@ -70,28 +74,32 @@ spec:
           - name: PORT
             value: "{{ .Values.service.port }}"
           - name: MODEL_ID
-            value: "/models/{{ .Values.gretelLLMConfig.modelId }}"
+            value: "/models/{{ $llmConfig.modelId }}"
           - name: MAX_TOTAL_TOKENS
-            value: "{{ .Values.gretelLLMConfig.maxTotalTokens }}"
+            value: "{{ $llmConfig.maxTotalTokens }}"
           - name: MAX_INPUT_LENGTH
-            value: "{{ .Values.gretelLLMConfig.maxInputLength }}"
+            value: "{{ $llmConfig.maxInputLength }}"
           - name: MAX_CONCURRENT_REQUESTS
-            value: "{{ .Values.gretelLLMConfig.maxConcurrentRequests }}"
+            value: "{{ $llmConfig.maxConcurrentRequests }}"
           - name: TRUST_REMOTE_CODE
-            value: "{{ .Values.gretelLLMConfig.trustRemoteCode }}"
-          {{- with .Values.gretelLLMConfig.quantize }}
+            value: "{{ $llmConfig.trustRemoteCode }}"
+          - name: HUGGINGFACE_HUB_CACHE
+            value: "/tmp"
+          - name: NUMBA_CACHE_DIR
+            value: "/tmp"
+          {{- with $llmConfig.quantize }}
           - name: "QUANTIZE"
             value: "{{ . }}"
           {{- end}}
-          {{- with .Values.gretelLLMConfig.ropeScaling }}
+          {{- with $llmConfig.ropeScaling }}
           - name: "ROPE_SCALING"
             value: "{{ . }}"
           {{- end}}
-          {{- with .Values.gretelLLMConfig.ropeFactor }}
+          {{- with $llmConfig.ropeFactor }}
           - name: "ROPE_FACTOR"
             value: "{{ . }}"
           {{- end}}
-          {{- with .Values.gretelLLMConfig.maxBatchPrefillTokens }}
+          {{- with $llmConfig.maxBatchPrefillTokens }}
           - name: "MAX_BATCH_PREFILL_TOKENS"
             value: "{{ . }}"
           {{- end}}
@@ -103,12 +111,28 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+            - mountPath: /dev/shm
+              name: shm
+            - mountPath: /models
+              name: models
+            - mountPath: /tmp
+              name: tmp
+          {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
       volumes:
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: models
+          emptyDir:
+            sizeLimit: {{ $llmConfig.modelSize }}Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+      {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}

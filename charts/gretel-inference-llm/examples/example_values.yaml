@@ -1,0 +1,10 @@
+gretelConfig:
+  apiKeySecretRef: "gretel-api-key"
+tolerations:
+  - effect: NoSchedule
+    key: gretel-worker
+    operator: Equal
+    value: gpu-model
+  - effect: NoSchedule
+    key: nvidia.com/gpu
+    operator: Exists

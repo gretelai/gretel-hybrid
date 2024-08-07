@@ -6,6 +6,14 @@
 {{- end -}}
 {{- end -}}
 
+{{- /* Validate and lookup the `modelName` config */}}
+{{- define "validateAndGetModelConfig" -}}
+{{- if not (hasKey .Values.availableLLMConfigs .Values.gretelLLMConfig.modelName) -}}
+  {{- fail (printf "Invalid modelName %q. Must be one of: %s" .Values.gretelLLMConfig.modelName (keys .Values.availableLLMConfigs | join ", ")) -}}
+{{- end -}}
+{{- index .Values.availableLLMConfigs .Values.gretelLLMConfig.modelName | toYaml -}}
+{{- end -}}
+
 {{- define "gretel-inference-llm.llmName" -}}
 {{- $llmName := printf "llm-%s" .Values.gretelLLMConfig.modelName }}
 {{- if gt (len $llmName) 63 -}}
