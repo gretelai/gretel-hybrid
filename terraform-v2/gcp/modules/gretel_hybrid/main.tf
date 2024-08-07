@@ -159,10 +159,14 @@ resource "helm_release" "gretel_hybrid_agent" {
   ]
   max_history = 50
 
+  set_sensitive {
+    name  = "gretelConfig.apiKey"
+    value = var.gretel_api_key
+  }
+
   values = [yamlencode({
     gretelConfig = {
       apiEndpoint      = var.gretel_api_endpoint
-      apiKey           = var.gretel_api_key
       projects         = var.gretel_hybrid_projects
       artifactEndpoint = module.gretel_hybrid_sink_bucket.url
 
