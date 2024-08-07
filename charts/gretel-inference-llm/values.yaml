@@ -15,7 +15,7 @@ gretelConfig:
 gretelLLMConfig:
   modelName: "mistral-7b"
   modelId: "mistral-7b-02-b70aa86"
-  modelBucket: "cloud-api-inference-model-storage"
+  modelBucket: "cloud-api-inference-model-storage-prod"
   maxTotalTokens: 8192
   maxInputLength: 4096
   maxConcurrentRequests: 64
