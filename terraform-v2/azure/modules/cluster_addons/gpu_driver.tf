@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.13.2"
+    }
+  }
+}
+
 resource "helm_release" "nvidia_gpu_device_daemonset" {
   name             = "nvidia-device-plugin"
   repository       = "https://nvidia.github.io/k8s-device-plugin"
