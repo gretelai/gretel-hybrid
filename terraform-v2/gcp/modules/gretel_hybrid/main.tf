@@ -153,6 +153,7 @@ resource "helm_release" "gretel_hybrid_agent" {
   name       = "gretel-agent"
   repository = var.gretel_helm_repo
   chart      = var.gretel_chart
+  version    = var.gretel_chart_version
   namespace  = var.gretel_hybrid_namespace
   depends_on = [
     kubernetes_namespace.gretel_hybrid_namespace

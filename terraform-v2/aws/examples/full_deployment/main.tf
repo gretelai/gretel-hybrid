@@ -206,8 +206,9 @@ module "gretel_hybrid" {
 
   aws_tags = local.aws_tags
 
-  gretel_helm_repo = var.gretel_helm_repo
-  gretel_chart     = var.gretel_chart
+  gretel_helm_repo     = var.gretel_helm_repo
+  gretel_chart         = var.gretel_chart
+  gretel_chart_version = var.gretel_chart_version
 
   # This allows deploying multiple instances into the same AWS account, as long
   # as their deployment names are different.
