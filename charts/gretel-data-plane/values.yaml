@@ -103,18 +103,6 @@ gretelController:
   ## Additional annotations to apply to the Gretel controller pod.
   podAnnotations: {}
 
-  monitoring:
-    traces:
-      ## Whether or not to enable opentelemetry tracing for the Gretel controller. Defaults to false.
-      enabled: false
-      ## The endpoint to send traces to.
-      endpoint: ""
-    metrics:
-      ## Whether or not to enable opentelemetry metrics for the Gretel controller. Defaults to false.
-      enabled: false
-      prometheus_host: "0.0.0.0"
-      prometheus_port: "8080"
-
 ## @section Gretel Agent parameters
 ## @descripton Provide configuration for the model agent that will connect to the Gretel Cloud.
 gretelAgent:
