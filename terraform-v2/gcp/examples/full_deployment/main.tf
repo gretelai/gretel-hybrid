@@ -143,8 +143,9 @@ module "gretel_hybrid" {
   gretel_credentials_encryption_key_users           = var.gretel_credentials_encryption_key_users
   gretel_credentials_encryption_key_prevent_destroy = var.gretel_credentials_encryption_key_prevent_destroy
 
-  gretel_helm_repo = var.gretel_helm_repo
-  gretel_chart     = var.gretel_chart
+  gretel_helm_repo     = var.gretel_helm_repo
+  gretel_chart         = var.gretel_chart
+  gretel_chart_version = var.gretel_chart_version
 
   # This allows deploying multiple instances into the same GCP project, as long
   # as their deployment names are different.
