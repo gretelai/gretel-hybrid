@@ -36,6 +36,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: "{{ .Values.gretelInitImage.name }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.gretelInitImage.repository }}:{{ .Values.gretelInitImage.tag }}"
           env:
           - name: MODEL_BUCKET
@@ -61,6 +63,8 @@ spec:
           volumeMounts:
             - mountPath: /models
               name: models
+            - mountPath: /tmp
+              name: tmp
           {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
