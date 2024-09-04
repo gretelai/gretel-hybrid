@@ -13,6 +13,7 @@ gretelConfig:
   apiEndpoint: "https://api.gretel.cloud"
 
 gretelInitImage:
+  enabled: true
   name: s3-download-inference-model
   repository: amazon/aws-cli
   tag: 2.10.0
