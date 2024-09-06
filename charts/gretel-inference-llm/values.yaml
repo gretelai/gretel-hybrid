@@ -53,6 +53,19 @@ availableLLMConfigs:
     quantize: "awq"
     ropeFactor: ""
     ropeScaling: ""
+  llama31-8b:
+    modelName: "llama31-8b"
+    modelId: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 25 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: ""
+    ropeFactor: ""
+    ropeScaling: ""
 
 service:
   type: ClusterIP
