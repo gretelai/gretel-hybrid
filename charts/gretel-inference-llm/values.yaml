@@ -66,6 +66,45 @@ availableLLMConfigs:
     quantize: ""
     ropeFactor: ""
     ropeScaling: ""
+  mistral:
+    modelName: "mistral"
+    modelId: "casperhansen/mistral-nemo-instruct-2407-awq"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 25 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: "awq"
+    ropeFactor: ""
+    ropeScaling: ""
+  llama:
+    modelName: "llama"
+    modelId: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 25 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: ""
+    ropeFactor: ""
+    ropeScaling: ""
+  mock:
+    modelName: "mock"
+    modelId: "mockId"
+    modelBucket: "cloud-api-inference-model-storage-prod"
+    modelSize: 2 # GB
+    maxTotalTokens: 8192
+    maxInputLength: 4096
+    maxConcurrentRequests: 64
+    trustRemoteCode: false
+    maxBatchPrefillTokens: ""
+    quantize: ""
+    ropeFactor: ""
+    ropeScaling: ""
 
 service:
   type: ClusterIP
