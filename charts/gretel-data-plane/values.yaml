@@ -300,6 +300,7 @@ gretelWorkers:
 
 ## Argo Controller configuration
 argoController:
+  enabled: true
   image:
     ## The repository of the image to use.
     repository: "quay.io/argoproj/workflow-controller"
