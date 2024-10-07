@@ -79,6 +79,8 @@ resource "azurerm_storage_management_policy" "expire_objects_policy" {
 }
 
 resource "kubernetes_namespace" "gretel_hybrid_namespace" {
+  count = var.skip_kubernetes_resources ? 0 : 1
+
   metadata {
     name = var.gretel_hybrid_namespace
   }
