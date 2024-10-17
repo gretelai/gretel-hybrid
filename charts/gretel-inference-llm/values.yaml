@@ -138,6 +138,12 @@ podLabels: {}
 imagePullSecrets: []
 podSecurityContext: {}
 
+podDisruptionBudget:
+  create: false
+  minAvailable: 1
+  # only set `minAvailable` XOR `maxUnavailable`
+  # maxUnavailable: 1
+
 securityContext:
   allowPrivilegeEscalation: false
   runAsNonRoot: true
