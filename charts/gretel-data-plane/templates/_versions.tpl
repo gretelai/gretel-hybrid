@@ -14,6 +14,15 @@
 {{- .Values.gretelAgent.image.tag | default (include "gretel-gcc.appVersion" .) -}}
 {{- end -}}
 
+
+{{- define "gretel-gcc.gretelController.supervisor.image.tag" -}}
+{{- .Values.gretelController.supervisor.image.tag | default (include "gretel-gcc.appVersion" .) -}}
+{{- end -}}
+
 {{- define "gretel-gcc.gretelController.supervisor.image" -}}
+{{- if (kindIs "string" .Values.gretelController.supervisor.image) -}}
 {{- .Values.gretelController.supervisor.image | default (include "gretel-gcc.appVersion" . | printf "gcc/supervisor-hybrid:%s") -}}
+{{- else -}}
+{{ printf "%s:%s" .Values.gretelController.supervisor.image.repository (include "gretel-gcc.gretelController.supervisor.image.tag" .) -}}
+{{- end -}}
 {{- end -}}

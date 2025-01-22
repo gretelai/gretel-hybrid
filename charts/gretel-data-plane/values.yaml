@@ -75,7 +75,10 @@ gretelController:
   supervisor:
     ## Allows specifying a custom image to use in the supervisor container. Defaults to
     ## gcc/supervisor-hybrid:<appVersion> when not set.
-    image: null
+    image:
+      repository: gcc/supervisor-hybrid
+      tag: ""
+      pullPolicy: IfNotPresent
 
   ## Node selector for the Gretel controller pod.
   nodeSelector: {}
