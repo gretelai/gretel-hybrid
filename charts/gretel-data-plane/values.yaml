@@ -186,6 +186,14 @@ gretelWorkers:
   ## Prevents all Gretel jobs from being evicted by the autoscaler
   preventAutoscalerEviction: true
 
+  ## Limits is the maximum number of workflows that can be created in the namespace.
+  limits:
+
+    # maxTotalWorkflows is the total number of workflows that can be created in the release namespace.
+    # This is a hard limit that cannot be exceeded beyond this value unless increased.
+    # This limit includes created, completed, and failed workflows.
+    maxTotalWorkflows: 100
+
   ## Configuration for worker pods executing workflow actions
   workflow:
     ## Setting to determine whether or not we upload workflow logs to Gretel cloud
