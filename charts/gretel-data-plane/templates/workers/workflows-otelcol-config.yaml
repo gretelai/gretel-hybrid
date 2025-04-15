@@ -1,0 +1,79 @@
+{{- if .Values.gretelWorkers.workflow.enableOtelLogs }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gretel-gcc.namePrefix" . }}otelcol-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: workers
+    {{- include "gretel-gcc.labels" . | nindent 4 }}
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      filelog:
+        include:
+          - "${GRETEL_WORKFLOW_LOGS_DIRECTORY}/*.log"
+        start_at: beginning
+        multiline:
+          line_start_pattern: '^\{'
+        operators:
+          - type: json_parser
+            id: parse-json
+            timestamp:
+              parse_from: attributes.ts
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+            severity:
+              parse_from: attributes.level
+          - type: move
+            from: attributes.msg
+            to: body
+
+    processors:
+      resource:
+        attributes:
+          - key: service.name
+            value: "workflows"
+            action: upsert
+          - key: gretel.user_id
+            value: "${GRETEL_USER_ID}"
+            action: upsert
+          - key: gretel.workflow_run_id
+            value: "${GRETEL_WORKFLOW_RUN_ID}"
+            action: upsert
+          - key: gretel.workflow_step_name
+            value: "${GRETEL_WORKFLOW_STEP_NAME}"
+            action: upsert
+          - key: gretel.workflow_step_task
+            value: "${GRETEL_WORKFLOW_STEP_TASK}"
+            action: upsert
+          - key: k8s.pod.uid
+            value: "${POD_UID}"
+            action: upsert
+          - key: k8s.pod.name
+            value: "${POD_NAME}"
+            action: upsert
+          - key: k8s.namespace.name
+            value: "${POD_NAMESPACE}"
+            action: upsert
+
+    exporters:
+      otlphttp:
+        endpoint: "${GRETEL_OTEL_COLLECTOR_OTLP_ENDPOINT}"
+        headers:
+          x-scope-orgid: "${GRETEL_TENANT_NAME}"
+    {{- if .Values.gretelWorkers.workflow.enableDatadogOtelLogs }}
+      otlphttp/datadog:
+        endpoint: "http://${NODE_IP}:4318"
+    {{- end }}
+
+    service:
+      pipelines:
+        logs:
+          receivers: [filelog]
+          processors: [resource]
+          {{- if .Values.gretelWorkers.workflow.enableDatadogOtelLogs }}
+          exporters: [otlphttp, otlphttp/datadog]
+          {{- else }}
+          exporters: [otlphttp]
+          {{- end }}
+{{- end }}

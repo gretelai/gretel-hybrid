@@ -91,6 +91,14 @@ spec:
             - name: OTEL_EXPORTER_PROMETHEUS_PORT
               value: {{ .Values.gretelController.monitoring.metrics.prometheus_port | quote }}
             {{- end }}
+            {{- if .Values.gretelWorkers.workflow.enableOtelLogs }}
+            - name: GRETEL_WORKFLOW_OTEL_COLLECTOR_ENABLED
+              value: "true"
+            - name: GRETEL_OTEL_COLLECTOR_CONFIG_MAP_NAME
+              value: {{ include "gretel-gcc.namePrefix" . }}otelcol-config
+            - name: GRETEL_OTEL_COLLECTOR_CONFIG_PATH
+              value: /etc/otel/otel-collector-config.yaml
+            {{- end }}
           envFrom:
             - {{- include "gretel-gcc.commonData.envFrom" . | nindent 14 }}
           volumeMounts:

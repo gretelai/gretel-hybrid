@@ -208,6 +208,12 @@ gretelWorkers:
       ## Annotations to be applied to the created service account.
       annotations: {}
 
+    ## Setting to determine whether or not we enable OpenTelemetry logs for workflow actions
+    enableOtelLogs: false
+
+    ## Setting to determine whether or not we enable sending OpenTelemetry logs to a Datadog agent
+    enableDatadogOtelLogs: false
+
     ## Resource specification to use for workflow action workers. See
     ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     resources:
