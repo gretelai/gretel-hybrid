@@ -37,6 +37,9 @@ data:
           - key: gretel.user_id
             value: "${GRETEL_USER_ID}"
             action: upsert
+          - key: gretel.user_email
+            value: "${GRETEL_USER_EMAIL}"
+            action: upsert
           - key: gretel.workflow_run_id
             value: "${GRETEL_WORKFLOW_RUN_ID}"
             action: upsert
